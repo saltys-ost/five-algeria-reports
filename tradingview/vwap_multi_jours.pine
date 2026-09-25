@@ -5,76 +5,88 @@
 //  Trace jusqu'à 4 VWAP « glissants » sur le graphique, chacun calculé sur une
 //  fenêtre paramétrable en JOURS CALENDAIRES (7J, 30J, 90J, 365J, ...).
 //
-//  Le calcul est basé sur le temps (et non sur un nombre de bougies), donc le
-//  résultat est cohérent quel que soit l'unité de temps du graphique
-//  (1 min, 15 min, 1 h, 1 D...) et quel que soit le marché (crypto 24/7,
-//  actions avec week-ends, etc.).
+//  Chaque VWAP possède sa propre « unité de temps de calcul » (UT de calcul),
+//  indépendante de l'unité de temps du graphique. Cela permet par exemple
+//  d'afficher un VWAP 365J sur un graphique en 5 minutes : le VWAP est calculé
+//  sur les bougies journalières (qui couvrent plusieurs années) et reporté sur
+//  le graphique M5.
 //
-//  VWAP(N jours) = Σ(prix × volume) / Σ(volume) sur toutes les bougies dont
-//  l'heure d'ouverture est comprise dans les N derniers jours.
+//  VWAP(N jours) = Σ(prix × volume) / Σ(volume) sur toutes les bougies de l'UT
+//  de calcul dont l'heure d'ouverture est comprise dans les N derniers jours.
 // ─────────────────────────────────────────────────────────────────────────────
 indicator("VWAP Multi-Jours (glissant)", shorttitle = "VWAP nJ", overlay = true, max_labels_count = 8)
 
 // ═══════════════════════════════  Paramètres  ═══════════════════════════════
 grpG           = "Général"
 src            = input.source(hlc3, "Source du prix", group = grpG, tooltip = "Prix utilisé pour le calcul (hlc3 = (high+low+close)/3, standard pour un VWAP).")
-hideIncomplete = input.bool(true, "Masquer tant que l'historique ne couvre pas la fenêtre", group = grpG, tooltip = "Si activé, la ligne n'apparaît que lorsque le graphique dispose d'au moins N jours d'historique. Sinon, le VWAP est affiché dès la première bougie (il équivaut alors à un VWAP cumulé depuis le début des données).")
+hideIncomplete = input.bool(true, "Masquer tant que l'historique ne couvre pas la fenêtre", group = grpG, tooltip = "Si activé, la ligne n'apparaît que lorsque l'UT de calcul dispose d'au moins N jours d'historique. Sinon, le VWAP est affiché dès la première bougie (il équivaut alors à un VWAP cumulé depuis le début des données).")
 showLabels     = input.bool(true, "Afficher les étiquettes (valeur à droite)", group = grpG)
 labelOffset    = input.int(3, "Décalage des étiquettes (bougies)", minval = 0, maxval = 50, group = grpG)
 lineWidth      = input.int(2, "Épaisseur des lignes", minval = 1, maxval = 5, group = grpG)
+
+TT_TF = "Unité de temps sur laquelle le VWAP est calculé, indépendamment du graphique.\n\n" +
+     "TradingView ne charge qu'un nombre limité de bougies par unité de temps : sur un graphique M5 il n'y a que quelques semaines d'historique, " +
+     "donc un VWAP 365J doit être calculé sur des bougies plus larges (1D) puis reporté sur le graphique.\n\n" +
+     "Règle simple : 7J → 15 min ou 1 h · 30J → 1 h · 90J → 4 h · 365J et plus → 1D.\n\n" +
+     "Si l'UT de calcul est plus petite que celle du graphique, c'est l'UT du graphique qui est utilisée."
 
 grp1 = "VWAP 1"
 on1  = input.bool(true, "Activer", group = grp1, inline = "v1")
 d1   = input.int(7, "Jours", minval = 1, maxval = 3650, group = grp1, inline = "v1")
 c1   = input.color(color.new(color.aqua, 0), "", group = grp1, inline = "v1")
+tf1  = input.timeframe("15", "UT de calcul", group = grp1, tooltip = TT_TF)
 
 grp2 = "VWAP 2"
 on2  = input.bool(true, "Activer", group = grp2, inline = "v2")
 d2   = input.int(30, "Jours", minval = 1, maxval = 3650, group = grp2, inline = "v2")
 c2   = input.color(color.new(color.orange, 0), "", group = grp2, inline = "v2")
+tf2  = input.timeframe("60", "UT de calcul", group = grp2, tooltip = TT_TF)
 
 grp3 = "VWAP 3"
 on3  = input.bool(false, "Activer", group = grp3, inline = "v3")
 d3   = input.int(90, "Jours", minval = 1, maxval = 3650, group = grp3, inline = "v3")
 c3   = input.color(color.new(color.fuchsia, 0), "", group = grp3, inline = "v3")
+tf3  = input.timeframe("240", "UT de calcul", group = grp3, tooltip = TT_TF)
 
 grp4 = "VWAP 4"
 on4  = input.bool(true, "Activer", group = grp4, inline = "v4")
 d4   = input.int(365, "Jours", minval = 1, maxval = 3650, group = grp4, inline = "v4")
 c4   = input.color(color.new(color.yellow, 0), "", group = grp4, inline = "v4")
-
-// ═══════════════════  Sommes cumulées partagées (1 seule fois)  ═══════════════
-// On stocke, pour chaque bougie, l'heure d'ouverture et les sommes cumulées
-// Σ(prix×volume) et Σ(volume) depuis le début des données. Le VWAP sur une
-// fenêtre quelconque est alors une simple différence de deux cumuls.
-const int MS_PER_DAY = 86400000
-
-var int[]   tArr     = array.new_int()
-var float[] cumPVArr = array.new_float()
-var float[] cumVArr  = array.new_float()
-
-float vol = nz(volume)
-var float cumPV = 0.0
-var float cumV  = 0.0
-cumPV += src * vol
-cumV  += vol
-
-array.push(tArr, time)
-array.push(cumPVArr, cumPV)
-array.push(cumVArr, cumV)
+tf4  = input.timeframe("D", "UT de calcul", group = grp4, tooltip = TT_TF)
 
 // ═══════════════════════  Calcul d'un VWAP glissant  ═════════════════════════
-// Chaque appel conserve son propre pointeur `ptr` (index de la première bougie
-// encore dans la fenêtre). Le pointeur ne fait qu'avancer : coût amorti O(1)
-// par bougie, même avec 365 jours sur un graphique en 1 minute.
-rollingVwap(int days) =>
-    var int ptr = 0
-    int cutoff = time - days * MS_PER_DAY
+// La fonction est autonome (ses propres cumuls et son propre pointeur) pour
+// pouvoir être évaluée dans le contexte d'une autre unité de temps via
+// request.security(). Chaque appel conserve son propre état.
+//
+// Principe : on stocke pour chaque bougie l'heure d'ouverture et les sommes
+// cumulées Σ(prix×volume) et Σ(volume). Le VWAP sur N jours est alors une
+// différence de deux cumuls. Le pointeur `ptr` (index de la première bougie
+// encore dans la fenêtre) ne fait qu'avancer : coût amorti O(1) par bougie.
+const int MS_PER_DAY = 86400000
+
+rollingVwap(float price, int days) =>
+    var int[]   tArr  = array.new_int()
+    var float[] pvArr = array.new_float()
+    var float[] vArr  = array.new_float()
+    var float   cumPV = 0.0
+    var float   cumV  = 0.0
+    var int     ptr   = 0
+
+    float vol = nz(volume)
+    cumPV += price * vol
+    cumV  += vol
+    array.push(tArr, time)
+    array.push(pvArr, cumPV)
+    array.push(vArr, cumV)
+
     // On sort de la fenêtre toutes les bougies ouvertes il y a plus de N jours.
-    while ptr < array.size(tArr) and array.get(tArr, ptr) <= cutoff
+    int cutoff = time - days * MS_PER_DAY
+    while ptr < array.size(tArr) - 1 and array.get(tArr, ptr) <= cutoff
         ptr += 1
-    float basePV = ptr > 0 ? array.get(cumPVArr, ptr - 1) : 0.0
-    float baseV  = ptr > 0 ? array.get(cumVArr,  ptr - 1) : 0.0
+
+    float basePV = ptr > 0 ? array.get(pvArr, ptr - 1) : 0.0
+    float baseV  = ptr > 0 ? array.get(vArr,  ptr - 1) : 0.0
     float winPV  = cumPV - basePV
     float winV   = cumV  - baseV
     float v      = winV > 0 ? winPV / winV : na
@@ -83,11 +95,15 @@ rollingVwap(int days) =>
     bool complete = ptr > 0
     [v, complete]
 
+// UT de calcul effective : jamais plus petite que celle du graphique.
+effTf(simple string tf) =>
+    tf == "" or timeframe.in_seconds(tf) < timeframe.in_seconds() ? timeframe.period : tf
+
 // Appels inconditionnels (obligatoire pour que l'état `var` reste cohérent).
-[v1, ok1] = rollingVwap(d1)
-[v2, ok2] = rollingVwap(d2)
-[v3, ok3] = rollingVwap(d3)
-[v4, ok4] = rollingVwap(d4)
+[v1, ok1] = request.security(syminfo.tickerid, effTf(tf1), rollingVwap(src, d1))
+[v2, ok2] = request.security(syminfo.tickerid, effTf(tf2), rollingVwap(src, d2))
+[v3, ok3] = request.security(syminfo.tickerid, effTf(tf3), rollingVwap(src, d3))
+[v4, ok4] = request.security(syminfo.tickerid, effTf(tf4), rollingVwap(src, d4))
 
 // Valeur finale affichée (na = rien tracé).
 shown(bool on, float v, bool complete) =>
@@ -131,9 +147,12 @@ lb4 := updateLabel(lb4, on4, p4, d4, c4)
 // ══════════════════════  Avertissement : pas de volume  ══════════════════════
 // Certains symboles (indices, forex chez certains courtiers) n'ont pas de
 // volume : le VWAP est alors impossible à calculer.
+var float cumVolChart = 0.0
+cumVolChart += nz(volume)
+
 var label warn = na
 if barstate.islast
-    if cumV == 0
+    if cumVolChart == 0
         if na(warn)
             warn := label.new(bar_index, close, "", style = label.style_label_left, color = color.new(color.red, 20), textcolor = color.white, size = size.normal)
         label.set_xy(warn, bar_index + labelOffset, close)
