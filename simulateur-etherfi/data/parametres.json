@@ -1,0 +1,1950 @@
+{
+  "meta": {
+    "version": 1,
+    "date_creation": "2026-09-28",
+    "description": "Paramètres du simulateur ether.fi Cash. Statuts : CONFIRMÉ (validé par l'utilisateur ou par le support, date indiquée), VÉRIFIÉ (source publique lue par Claude Code, date indiquée), DÉFAUT (valeur datée du cahier des charges, non revalidée), INCONNU (bloque l'actif ou le calcul concerné).",
+    "statuts": [
+      "CONFIRMÉ",
+      "VÉRIFIÉ",
+      "DÉFAUT",
+      "INCONNU"
+    ]
+  },
+  "parametres": {
+    "depenses_mensuelles": {
+      "libelle": "Dépenses mensuelles carte",
+      "valeur": 1000,
+      "unite": "EUR",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "A",
+      "ou_trouver": "moi",
+      "note": ""
+    },
+    "capital_collateral": {
+      "libelle": "Capital mis en collatéral",
+      "valeur": 10000,
+      "unite": "EUR",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "A",
+      "ou_trouver": "moi",
+      "note": ""
+    },
+    "frequence_recharge": {
+      "libelle": "Fréquence de recharge (Direct Pay)",
+      "valeur": 1,
+      "unite": "par mois",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "A",
+      "ou_trouver": "moi",
+      "note": ""
+    },
+    "cashback_carte_actuelle": {
+      "libelle": "Cashback de ma carte bancaire actuelle",
+      "valeur": 0,
+      "unite": "%",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "A",
+      "ou_trouver": "moi",
+      "note": ""
+    },
+    "horizon_mois": {
+      "libelle": "Horizon de simulation",
+      "valeur": 36,
+      "unite": "mois",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "A",
+      "ou_trouver": "moi",
+      "note": "36 ou 48, sélecteur dans l'app"
+    },
+    "remboursement_mode": {
+      "libelle": "Remboursement mensuel du Borrow",
+      "valeur": "100%",
+      "unite": "mode",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "A",
+      "ou_trouver": "moi",
+      "note": "« 100% » = je rembourse chaque mois les dépenses du mois ET les intérêts (dette remise à zéro, revolving) ; « 0 » = je laisse courir ; ou un montant fixe en EUR"
+    },
+    "marge_securite": {
+      "libelle": "Marge de sécurité sous le LTV max",
+      "valeur": 20,
+      "unite": "%",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "A",
+      "ou_trouver": "moi",
+      "note": ""
+    },
+    "taux_emprunt_eurc": {
+      "libelle": "Taux d'emprunt EURC",
+      "valeur": 3.0,
+      "unite": "%/an",
+      "source": "on-chain (Borrow Hub Optimism)",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Borrow > ligne EURC",
+      "note": "event UpdateAsset.drawnRate du 28/09/2026 (on-chain, relevé utilisateur). Aucune source publique ne publie le taux EURC."
+    },
+    "taux_emprunt_usdc": {
+      "libelle": "Taux d'emprunt USDC",
+      "valeur": 3.7,
+      "unite": "%/an",
+      "source": "on-chain (Borrow Hub Optimism)",
+      "date": "2026-08-27",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Borrow > ligne USDC",
+      "note": "Taux variable fixé par le marché Aave V4 dédié d'ether.fi sur OP (help center 20/08/2026 : « check the current rate in the app »). Secondaires contradictoires : ~4 % (cardpilled 27/09, crypto.news 13/08) vs « starts at 1.17 % » (airdropalert 14/09). La page Earn affichait « Borrow at 1.47 % » le 28/09 (actif non précisé) → question support Q6."
+    },
+    "apy_earn_eur": {
+      "libelle": "APY Earn EUR (affiché)",
+      "valeur": 5.82,
+      "unite": "%/an",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > Euro Yield",
+      "note": "Liquid EUR (vault Midas, token 0xcC47…8C13 sur OP) : absent de DefiLlama → aucune référence publique ; seule la page app fait foi."
+    },
+    "apy_earn_eur_7j": {
+      "libelle": "APY Earn EUR 7 j",
+      "valeur": 5.5,
+      "unite": "%/an",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > Euro Yield > Your Balance > 7D",
+      "note": ""
+    },
+    "apy_earn_eur_30j": {
+      "libelle": "APY Earn EUR 30 j",
+      "valeur": 5.2,
+      "unite": "%/an",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > Euro Yield > Your Balance > 30D",
+      "note": ""
+    },
+    "apy_earn_eur_90j": {
+      "libelle": "APY Earn EUR 90 j",
+      "valeur": 6.25,
+      "unite": "%/an",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > Euro Yield > Your Balance > 90D",
+      "note": ""
+    },
+    "apy_earn_usd": {
+      "libelle": "APY Earn USD (affiché)",
+      "valeur": 5.49,
+      "unite": "%/an",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > USD Yield",
+      "note": "Référence publique DefiLlama 28/09/2026 : LiquidUSD 5,57 % (TVL 26,6 M$)."
+    },
+    "apy_earn_usd_7j": {
+      "libelle": "APY Earn USD 7 j",
+      "valeur": null,
+      "unite": "%/an",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > USD Yield > Your Balance > 7D",
+      "note": ""
+    },
+    "apy_earn_usd_30j": {
+      "libelle": "APY Earn USD 30 j",
+      "valeur": null,
+      "unite": "%/an",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > USD Yield > Your Balance > 30D",
+      "note": ""
+    },
+    "apy_earn_usd_90j": {
+      "libelle": "APY Earn USD 90 j",
+      "valeur": null,
+      "unite": "%/an",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > USD Yield > Your Balance > 90D",
+      "note": ""
+    },
+    "apy_earn_usd_rwa": {
+      "libelle": "APY Earn USD RWA (affiché)",
+      "valeur": 6.31,
+      "unite": "%/an",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > USD RWAs",
+      "note": "Liquid RWA Yield : 83,5 % en CLO FalconX sur Plume, frais plateforme 1 % | Secondaire (airdropalert 14/09/2026) : « up to 6.26 % APY on USD RWAs »."
+    },
+    "apy_earn_usd_rwa_7j": {
+      "libelle": "APY Earn USD RWA 7 j",
+      "valeur": null,
+      "unite": "%/an",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > USD RWAs > Your Balance > 7D",
+      "note": ""
+    },
+    "apy_earn_usd_rwa_90j": {
+      "libelle": "APY Earn USD RWA 90 j",
+      "valeur": null,
+      "unite": "%/an",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > USD RWAs > Your Balance > 90D",
+      "note": ""
+    },
+    "apy_earn_eth": {
+      "libelle": "APY Earn ETH (affiché)",
+      "valeur": 3.26,
+      "unite": "%/an",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > ETH Yield",
+      "note": "Référence publique DefiLlama 28/09/2026 : LiquidETH 3,41 % (TVL 363 M$)."
+    },
+    "apy_earn_eth_7j": {
+      "libelle": "APY Earn ETH 7 j",
+      "valeur": null,
+      "unite": "%/an",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > ETH Yield > Your Balance > 7D",
+      "note": ""
+    },
+    "apy_earn_eth_90j": {
+      "libelle": "APY Earn ETH 90 j",
+      "valeur": null,
+      "unite": "%/an",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > ETH Yield > Your Balance > 90D",
+      "note": ""
+    },
+    "apy_earn_btc": {
+      "libelle": "APY Earn BTC (affiché)",
+      "valeur": 1.2,
+      "unite": "%/an",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > BTC Yield",
+      "note": "Référence publique DefiLlama 28/09/2026 : LiquidBTC 0,75 % (TVL 11,45 M$) — plus bas que l'affichage app 1,20 %."
+    },
+    "apy_earn_btc_7j": {
+      "libelle": "APY Earn BTC 7 j",
+      "valeur": 0.94,
+      "unite": "%/an",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > BTC Yield > Your Balance > 7D",
+      "note": ""
+    },
+    "apy_earn_btc_30j": {
+      "libelle": "APY Earn BTC 30 j",
+      "valeur": null,
+      "unite": "%/an",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > BTC Yield > Your Balance > 30D",
+      "note": ""
+    },
+    "apy_earn_btc_90j": {
+      "libelle": "APY Earn BTC 90 j",
+      "valeur": 1.47,
+      "unite": "%/an",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > BTC Yield > Your Balance > 90D",
+      "note": ""
+    },
+    "rendement_reel_eur": {
+      "libelle": "Rendement réellement perçu Earn EUR",
+      "valeur": {
+        "rewards": 0.07,
+        "solde": 16.9,
+        "depuis": "2026-08-27"
+      },
+      "unite": "EUR",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > Euro Yield > Total Rewards + History",
+      "note": "0,07 € sur 16,90 € en 32 jours ≈ 4,7 %/an : cohérent avec 5,2–6,25 % (écart < 1 pt, arrondi sur un petit montant)"
+    },
+    "rendement_reel_btc": {
+      "libelle": "Rendement réellement perçu Earn BTC",
+      "valeur": {
+        "rewards_btc": 0.0004,
+        "solde_btc": 0.03,
+        "depuis": "2026-07-28?"
+      },
+      "unite": "BTC",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > BTC Yield > Total Rewards + History",
+      "note": "0,0004 BTC sur 0,03 BTC en ~2 mois ≈ 8 %/an, incompatible avec 1,2 % affiché → À DEMANDER : le solde a-t-il changé ? promo incluse ? Ce chiffre N'EST PAS utilisé par le moteur. | Piste V7 : 2 772,80 € ÷ 72 725 €/BTC = 0,0381 BTC-équivalent ; si le solde réel est ~0,0369 liquidBTC (× 1,0344 = 0,0381 BTC) l'affichage « 0.03 » serait tronqué et la valeur € correcte. Autre piste : prix figé d'oct.–nov. 2025 (BTC ≈ 92 400 €). Question support Q3."
+    },
+    "apy_earn_gold": {
+      "libelle": "APY Earn Gold",
+      "valeur": null,
+      "unite": "%/an",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "B",
+      "ou_trouver": "app > Earn > carte Gold",
+      "note": "« Soon » : non disponible"
+    },
+    "eurusd": {
+      "libelle": "Taux EUR/USD",
+      "valeur": 1.14,
+      "unite": "USD par EUR",
+      "source": "on-chain (Borrow Hub Optimism)",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Transactions > dernier dépôt > Exchange rate",
+      "note": "BCE 25/09/2026 : 1,1403 (api.frankfurter.dev, vérifié par Claude Code le 28/09) — cohérent avec le 1,14 on-chain."
+    },
+    "eurusd_bce": {
+      "libelle": "Taux EUR/USD BCE (référence publique)",
+      "valeur": 1.1403,
+      "unite": "USD par EUR",
+      "source": "Claude Code (source publique)",
+      "date": "2026-09-25",
+      "statut": "VÉRIFIÉ",
+      "bloc": "B",
+      "ou_trouver": "api.frankfurter.dev (BCE)",
+      "note": "Sert à mesurer le spread FX caché des dépôts USDC"
+    },
+    "prix_ethfi": {
+      "libelle": "Prix ETHFI",
+      "valeur": 0.665,
+      "unite": "USD",
+      "source": "Claude Code (source publique)",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "B",
+      "ou_trouver": "app > Markets > ETHFI (cours ether.fi) ; CoinGecko 28/09/2026 09:43 UTC : 0,6654 $ / 0,5849 €",
+      "note": "CoinGecko 28/09/2026 09:44 UTC : 0,6654 $ / 0,5849 € ; ATH 8,53 $ (27/03/2024), ATL 0,2665 $ (05/06/2026). Le cours utilisé par ether.fi pour convertir le cashback peut différer : voir « décote de conversion »."
+    },
+    "apy_staking_weeth": {
+      "libelle": "APY staking weETH",
+      "valeur": 2.33,
+      "unite": "%/an",
+      "source": "app ether.fi > Markets",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Markets > weETH",
+      "note": ""
+    },
+    "apy_staking_weeths": {
+      "libelle": "APY staking weETHs",
+      "valeur": 3.5,
+      "unite": "%/an",
+      "source": "app ether.fi > Markets",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Markets > weETHs",
+      "note": ""
+    },
+    "apy_staking_frxusd": {
+      "libelle": "APY frxUSD",
+      "valeur": 3.57,
+      "unite": "%/an",
+      "source": "app ether.fi > Markets",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Markets > frxUSD",
+      "note": ""
+    },
+    "apy_staking_behype": {
+      "libelle": "APY beHYPE",
+      "valeur": 1.57,
+      "unite": "%/an",
+      "source": "app ether.fi > Markets",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Markets > beHYPE",
+      "note": ""
+    },
+    "apy_staking_ebtc": {
+      "libelle": "APY eBTC",
+      "valeur": 0.2,
+      "unite": "%/an",
+      "source": "app ether.fi > Markets",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Markets > eBTC",
+      "note": ""
+    },
+    "apy_staking_sethfi": {
+      "libelle": "APY sETHFI",
+      "valeur": 1.39,
+      "unite": "%/an",
+      "source": "app ether.fi > Markets",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Markets > sETHFI",
+      "note": ""
+    },
+    "taux_supply_directpay": {
+      "libelle": "Rendement des fonds Direct Pay (fournis au Borrow Hub)",
+      "valeur": 0,
+      "unite": "%/an",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "B",
+      "ou_trouver": "app > Transactions > dépôt > ligne « Supply » ; app > Earn ou Borrow > taux « supply »",
+      "note": "Les dépôts sont fournis automatiquement au marché de prêt ; le taux de supply n'a pas été relevé. 0 % = hypothèse prudente."
+    },
+    "frais_depot_sepa_eurc": {
+      "libelle": "Dépôt SEPA → EURC",
+      "valeur": 0.2,
+      "unite": "%",
+      "source": "app ether.fi > Transactions (réel)",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "C",
+      "ou_trouver": "app > Transactions > dépôt EURC > Fees",
+      "note": "400,00 € → 399,20 EURC, 1:1"
+    },
+    "frais_depot_sepa_usdc": {
+      "libelle": "Dépôt SEPA → USDC, frais explicites",
+      "valeur": 0.17,
+      "unite": "%",
+      "source": "app ether.fi > Transactions (réel)",
+      "date": "2026-08-27",
+      "statut": "DÉFAUT",
+      "bloc": "C",
+      "ou_trouver": "app > Transactions > dépôt USDC > Fees",
+      "note": "998 € → 1 156,83 USDC, taux 1,1611"
+    },
+    "spread_fx_usdc": {
+      "libelle": "Dépôt SEPA → USDC, spread FX caché",
+      "valeur": 0.5,
+      "unite": "%",
+      "source": "help center ether.fi",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "C",
+      "ou_trouver": "comparer Exchange rate de l'app au cours BCE du jour",
+      "note": "Non vérifié : le 27/08 il faudrait le cours BCE du jour (1,1611 obtenu)"
+    },
+    "swap_usdc_eurc": {
+      "libelle": "Swap USDC ↔ EURC dans l'app",
+      "valeur": null,
+      "unite": "%",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "C",
+      "ou_trouver": "app > page EURC > Buy : saisir 100, lire « You receive »",
+      "note": ""
+    },
+    "swap_usdc_xstock": {
+      "libelle": "Swap USDC → actif tokenisé (SPYx…) dans l'app",
+      "valeur": null,
+      "unite": "%",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "C",
+      "ou_trouver": "app > page SPYx > Buy : saisir 100, lire « You receive » (heures de marché US)",
+      "note": ""
+    },
+    "swap_usdc_ebtc": {
+      "libelle": "Swap USDC → eBTC dans l'app",
+      "valeur": null,
+      "unite": "%",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "C",
+      "ou_trouver": "app > page eBTC > Buy : saisir 100, lire « You receive »",
+      "note": ""
+    },
+    "virement_sortant": {
+      "libelle": "Virement sortant",
+      "valeur": 0.1,
+      "unite": "%",
+      "source": "help center ether.fi",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "C",
+      "ou_trouver": "help center",
+      "note": ""
+    },
+    "fx_carte_eur": {
+      "libelle": "Frais FX carte, achats EUR",
+      "valeur": 0,
+      "unite": "%",
+      "source": "help center ether.fi",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "C",
+      "ou_trouver": "help center",
+      "note": ""
+    },
+    "fx_carte_autres": {
+      "libelle": "Frais FX carte, autres devises",
+      "valeur": 1,
+      "unite": "%",
+      "source": "help center ether.fi",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "C",
+      "ou_trouver": "help center",
+      "note": ""
+    },
+    "frais_atm": {
+      "libelle": "Retrait ATM",
+      "valeur": 2,
+      "unite": "%",
+      "source": "help center ether.fi",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "C",
+      "ou_trouver": "help center",
+      "note": ""
+    },
+    "achat_usdc_exchange": {
+      "libelle": "Achat USDC sur exchange (OKX/Kraken)",
+      "valeur": 0.2,
+      "unite": "%",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "C",
+      "ou_trouver": "moi",
+      "note": ""
+    },
+    "achat_xstock_dex": {
+      "libelle": "Achat xStocks sur DEX : frais + slippage",
+      "valeur": {
+        "solana_jupiter_pct": 0.15,
+        "ethereum_cow_pct": 1.0,
+        "arbitrum_cow_pct": 0.27,
+        "tbllx": "illiquide"
+      },
+      "unite": "%",
+      "source": "devis Jupiter Lite + CoW Swap + DexScreener/GeckoTerminal — Claude Code 28/09/2026 ~09:50 UTC (pré-ouverture US)",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "C",
+      "ou_trouver": "devis Jupiter / 1inch relevés par Claude Code (V4)",
+      "note": "Solana (Jupiter) : impact < 0,2 % de 570 à 11 400 USDC pour SPYx/QQQx/GLDx (TVL 0,8–4,7 M$, frais pool 0,01–0,25 %), spread A/V 0,02–0,16 % ; TBLLx illiquide (impact 91–99,6 %). Ethereum (CoW, solvers RFQ, verified:false) : SPYx 769–773 $, spread ~1 %, fee gas 3–4 USDC ; Arbitrum (CoW) : spread 0,27 %, fee 0,03 USDC ; Base : aucun. wSPYx directement : +19 à +70 % → inachetable, il faut acheter SPYx puis wrapper (ERC-4626 deposit). Pools AMM Uniswap Ethereum/Arbitrum/OP : < 2 k$, volume 0."
+    },
+    "bridge_fixe": {
+      "libelle": "Retrait exchange + bridge Across (fixe par transfert)",
+      "valeur": 0.4,
+      "unite": "USD",
+      "source": "across.to > History (réel)",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "C",
+      "ou_trouver": "across.to > History",
+      "note": "Réel 28/09 : 0,19 $ bridge + 0,18 $ gas pour 17 USDC. Across API 28/09/2026 (USDC ETH→OP et ARB→OP) : 0,010 % + 0,0003 $ (570 → 11 400 USDC), fill 2–17 s ; gas d'origine Ethereum ≈ 0,4–0,6 $, Arbitrum ≈ 0,02–0,05 $. Across ne transporte PAS les xStocks (« Unsupported token »)."
+    },
+    "gas_optimism_depot": {
+      "libelle": "Gas Optimism par dépôt",
+      "valeur": 0.001,
+      "unite": "USD",
+      "source": "RPC Optimism (eth_gasPrice 0,001 gwei + L1 fee) — Claude Code 28/09/2026",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "C",
+      "ou_trouver": "explorateur Optimism",
+      "note": "Transaction typique < 0,01 $ sur OP ; Ethereum mainnet 28/09 : base fee ~1,1 gwei → transfert ERC-20 ≈ 0,22 $, swap ≈ 0,5–0,9 $."
+    },
+    "spread_directpay_usdc": {
+      "libelle": "Spread de conversion Direct Pay USDC sur achat EUR",
+      "valeur": 0,
+      "unite": "%",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "C",
+      "ou_trouver": "app > Transactions > achat carte > montant USDC débité ÷ montant EUR, comparer au taux BCE",
+      "note": ""
+    },
+    "swap_ethfi_eurc": {
+      "libelle": "Frais de swap ETHFI → EURC/USDC dans l'app",
+      "valeur": null,
+      "unite": "%",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "C",
+      "ou_trouver": "app > page ETHFI > Sell : saisir 10 ETHFI, lire « You receive », comparer au prix affiché",
+      "note": "Tant que INCONNU, le cashback net est calculé SANS frais de swap (optimiste) et l'app l'affiche"
+    },
+    "col_USDC": {
+      "libelle": "Collatéral USDC",
+      "valeur": {
+        "ltv": 90,
+        "seuil": 95,
+        "bonus": 1,
+        "classe": "stable",
+        "rendement_param": "taux_supply_directpay",
+        "liquidite": "normale",
+        "adresse_optimism": "0x0b2c639c533813f4aa9d7837caf62653d097ff85"
+      },
+      "unite": "% / % / %",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19) — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center (tableau collatéral)",
+      "note": "Rendement = taux de supply Direct Pay (0 % par défaut) | On-chain (Borrow Spoke Aave V4, OP, 28/09/2026) : collateralFactor 90 %, bonus MAX 5 % (enchère hollandaise : le bonus réel croît quand la santé baisse). Le moteur garde le bonus documenté du help center ; contradiction signalée.",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_EURC": {
+      "libelle": "Collatéral EURC",
+      "valeur": {
+        "ltv": 90,
+        "seuil": 95,
+        "bonus": 1,
+        "classe": "stable",
+        "rendement_param": "taux_supply_directpay",
+        "liquidite": "normale",
+        "adresse_optimism": "0xdcb612005417dc906ff72c87df732e5a90d49e11"
+      },
+      "unite": "% / % / %",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19) — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center (tableau collatéral)",
+      "note": "Rendement = taux de supply (0 % par défaut). ATTENTION : l'EURC placé dans Earn devient LiquidEUR (LTV 70 %), pas EURC 90 %. | On-chain (Borrow Spoke Aave V4, OP, 28/09/2026) : collateralFactor 90 %, bonus MAX 7.5 % (enchère hollandaise : le bonus réel croît quand la santé baisse). Le moteur garde le bonus documenté du help center ; contradiction signalée.",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_USDT": {
+      "libelle": "Collatéral USDT",
+      "valeur": {
+        "ltv": 90,
+        "seuil": 95,
+        "bonus": 1,
+        "classe": "stable",
+        "rendement_param": "taux_supply_directpay",
+        "liquidite": "normale",
+        "adresse_optimism": null
+      },
+      "unite": "% / % / %",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19) — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center",
+      "note": "",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_frxUSD": {
+      "libelle": "Collatéral frxUSD",
+      "valeur": {
+        "ltv": 90,
+        "seuil": 95,
+        "bonus": 1,
+        "classe": "stable",
+        "rendement_param": "apy_staking_frxusd",
+        "liquidite": "normale",
+        "adresse_optimism": null
+      },
+      "unite": "% / % / %",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19) — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center",
+      "note": "",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_eUSD": {
+      "libelle": "Collatéral eUSD",
+      "valeur": {
+        "ltv": 80,
+        "seuil": 90,
+        "bonus": 2,
+        "classe": "stable",
+        "rendement_param": null,
+        "liquidite": "normale",
+        "adresse_optimism": null
+      },
+      "unite": "% / % / %",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19) — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center",
+      "note": "",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_LiquidUSD": {
+      "libelle": "Collatéral LiquidUSD (USD Yield)",
+      "valeur": {
+        "ltv": 80,
+        "seuil": 90,
+        "bonus": 2,
+        "classe": "stable",
+        "rendement_param": "apy_earn_usd",
+        "liquidite": "normale",
+        "adresse_optimism": null
+      },
+      "unite": "% / % / %",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19) — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center",
+      "note": "Vault Earn USD",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_LiquidReserve": {
+      "libelle": "Collatéral LiquidReserve",
+      "valeur": {
+        "ltv": 80,
+        "seuil": 90,
+        "bonus": 2,
+        "classe": "stable",
+        "rendement_param": null,
+        "liquidite": "normale",
+        "adresse_optimism": null
+      },
+      "unite": "% / % / %",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19) — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center",
+      "note": "",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_LiquidEUR": {
+      "libelle": "Collatéral LiquidEUR (Euro Yield)",
+      "valeur": {
+        "ltv": 70,
+        "seuil": 90,
+        "bonus": 2,
+        "classe": "stable_eur",
+        "rendement_param": "apy_earn_eur",
+        "liquidite": "normale",
+        "adresse_optimism": null
+      },
+      "unite": "% / % / %",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19) — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center",
+      "note": "Vault Earn EUR : c'est ici que l'EURC rapporte ~5,8 %",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_LiquidRWA": {
+      "libelle": "Collatéral LiquidRWA (USD RWA Yield)",
+      "valeur": {
+        "ltv": 70,
+        "seuil": 90,
+        "bonus": 2,
+        "classe": "stable",
+        "rendement_param": "apy_earn_usd_rwa",
+        "liquidite": "normale",
+        "adresse_optimism": null
+      },
+      "unite": "% / % / %",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19) — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center",
+      "note": "",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_weETH": {
+      "libelle": "Collatéral weETH",
+      "valeur": {
+        "ltv": 55,
+        "seuil": 75,
+        "bonus": 3.5,
+        "classe": "eth",
+        "rendement_param": "apy_staking_weeth",
+        "liquidite": "normale",
+        "adresse_optimism": "0x5a7facb970d094b6c7ff1df0ea68d99e6e73cbff"
+      },
+      "unite": "% / % / %",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19) — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center",
+      "note": "Exemple officiel de liquidation basé sur cet actif | On-chain (Borrow Spoke Aave V4, OP, 28/09/2026) : collateralFactor 75 %, bonus MAX 10 % (enchère hollandaise : le bonus réel croît quand la santé baisse). Le moteur garde le bonus documenté du help center ; contradiction signalée.",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_wETH": {
+      "libelle": "Collatéral wETH",
+      "valeur": {
+        "ltv": 55,
+        "seuil": 75,
+        "bonus": 3.5,
+        "classe": "eth",
+        "rendement_param": null,
+        "liquidite": "normale",
+        "adresse_optimism": null
+      },
+      "unite": "% / % / %",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19) — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center",
+      "note": "On-chain (Borrow Spoke Aave V4, OP, 28/09/2026) : collateralFactor 75 %, bonus MAX 10 % (enchère hollandaise : le bonus réel croît quand la santé baisse). Le moteur garde le bonus documenté du help center ; contradiction signalée.",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_eBTC": {
+      "libelle": "Collatéral eBTC (Staked BTC)",
+      "valeur": {
+        "ltv": 52,
+        "seuil": 72,
+        "bonus": 5,
+        "classe": "btc",
+        "rendement_param": "apy_staking_ebtc",
+        "liquidite": "normale",
+        "adresse_optimism": "0x657e8C867D8B37dCC18fA4Caead9C45EB088C642 (vérifié on-chain, réserve 6)"
+      },
+      "unite": "% / % / %",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19) — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center",
+      "note": "eBTC (0x657e…C642, vérifié on-chain) et « BTC Yield » = LiquidBTC (0x5f46…0726) sont DEUX tokens distincts, tous deux acceptés en collatéral (52/72/5 et 50/70/5). 1 eBTC ≈ 1,0041 BTC ; 1 liquidBTC ≈ 1,0344 BTC (rates on-chain 28/09/2026).",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_LiquidETH": {
+      "libelle": "Collatéral LiquidETH (ETH Yield)",
+      "valeur": {
+        "ltv": 50,
+        "seuil": 70,
+        "bonus": 5,
+        "classe": "eth",
+        "rendement_param": "apy_earn_eth",
+        "liquidite": "normale",
+        "adresse_optimism": null
+      },
+      "unite": "% / % / %",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19) — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center",
+      "note": "",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_LiquidBTC": {
+      "libelle": "Collatéral LiquidBTC (BTC Yield)",
+      "valeur": {
+        "ltv": 50,
+        "seuil": 70,
+        "bonus": 5,
+        "classe": "btc",
+        "rendement_param": "apy_earn_btc",
+        "liquidite": "normale",
+        "adresse_optimism": null
+      },
+      "unite": "% / % / %",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19) — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center",
+      "note": "= « BTC Yield » dans l'app (token liquidBTC 0x5f46d540b6eD704C3c8789105F30E075AA900726). Déposer de l'eBTC dans BTC Yield donne des parts liquidBTC (LTV 50 %), pas de l'eBTC (52 %).",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_wHYPE": {
+      "libelle": "Collatéral wHYPE",
+      "valeur": {
+        "ltv": 45,
+        "seuil": 65,
+        "bonus": 4,
+        "classe": "hype",
+        "rendement_param": null,
+        "liquidite": "normale",
+        "adresse_optimism": null
+      },
+      "unite": "% / % / %",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19) — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center",
+      "note": "",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_beHYPE": {
+      "libelle": "Collatéral beHYPE",
+      "valeur": {
+        "ltv": 40,
+        "seuil": 60,
+        "bonus": 5,
+        "classe": "hype",
+        "rendement_param": "apy_staking_behype",
+        "liquidite": "normale",
+        "adresse_optimism": null
+      },
+      "unite": "% / % / %",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19) — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center",
+      "note": "",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_ETHFI": {
+      "libelle": "Collatéral ETHFI",
+      "valeur": {
+        "ltv": 20,
+        "seuil": 50,
+        "bonus": 5,
+        "classe": "ethfi",
+        "rendement_param": null,
+        "liquidite": "normale",
+        "adresse_optimism": null
+      },
+      "unite": "% / % / %",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19) — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center",
+      "note": "",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_sETHFI": {
+      "libelle": "Collatéral sETHFI",
+      "valeur": {
+        "ltv": 20,
+        "seuil": 50,
+        "bonus": 5,
+        "classe": "ethfi",
+        "rendement_param": "apy_staking_sethfi",
+        "liquidite": "normale",
+        "adresse_optimism": null
+      },
+      "unite": "% / % / %",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19) — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center",
+      "note": "",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_OP": {
+      "libelle": "Collatéral OP",
+      "valeur": {
+        "ltv": 20,
+        "seuil": 50,
+        "bonus": 5,
+        "classe": "alt",
+        "rendement_param": null,
+        "liquidite": "normale",
+        "adresse_optimism": null
+      },
+      "unite": "% / % / %",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19) — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center",
+      "note": "",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_SPYx": {
+      "libelle": "Collatéral SPYx (S&P 500)",
+      "valeur": {
+        "ltv": 67,
+        "seuil": 78,
+        "bonus": 10,
+        "classe": "sp500",
+        "rendement_param": null,
+        "liquidite": "normale",
+        "adresse_optimism": "0xc1e636aae7d6b46229fc2c362d562610519e8d7c (iwSPYx)"
+      },
+      "unite": "% / % / %",
+      "source": "on-chain OP (Borrow Spoke Aave V4 0xdffc…5308 + legacy DebtManager 0x0078…9553) + code public cash-v3 — Claude Code 28/09/2026",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "D",
+      "ou_trouver": "app > page SPYx > bulle « collateral » ; seuil : app > Borrow ou support",
+      "note": "Collatéral réel = miroir ether.fi « iwSPYx » (OFT LayerZero) d'un wrapper ERC-4626 Backed détenu sur Ethereum : dépôt uniquement sous forme wSPYx sur Ethereum, jamais depuis Solana/Arbitrum/OP. LTV 'app' vu par l'utilisateur ; on-chain : Spoke collateralFactor 78 % (= seuil de liquidation, HF < 1), minHealthFactor 1,1 → capacité d'emprunt ≈ 70,9 % ; legacy DebtManager LTV 73 / seuil 78 / bonus 7,5 %. Bonus retenu = max on-chain 10 %. Non documenté dans le help center → à confirmer (support).",
+      "statut_ltv": "DÉFAUT",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_QQQx": {
+      "libelle": "Collatéral QQQx (Nasdaq 100)",
+      "valeur": {
+        "ltv": 66,
+        "seuil": 78,
+        "bonus": 10,
+        "classe": "nasdaq",
+        "rendement_param": null,
+        "liquidite": "normale",
+        "adresse_optimism": "0x3c99d3a81b27583b2e26dbd387c10411f2763516 (iwQQQx)"
+      },
+      "unite": "% / % / %",
+      "source": "on-chain OP (Borrow Spoke Aave V4 0xdffc…5308 + legacy DebtManager 0x0078…9553) + code public cash-v3 — Claude Code 28/09/2026",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "D",
+      "ou_trouver": "idem",
+      "note": "Collatéral réel = miroir ether.fi « iwQQQx » (OFT LayerZero) d'un wrapper ERC-4626 Backed détenu sur Ethereum : dépôt uniquement sous forme wQQQx sur Ethereum, jamais depuis Solana/Arbitrum/OP. LTV 'app' vu par l'utilisateur ; on-chain : Spoke collateralFactor 78 % (= seuil de liquidation, HF < 1), minHealthFactor 1,1 → capacité d'emprunt ≈ 70,9 % ; legacy DebtManager LTV 73 / seuil 78 / bonus 7,5 %. Bonus retenu = max on-chain 10 %. Non documenté dans le help center → à confirmer (support).",
+      "statut_ltv": "DÉFAUT",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_TBLLx": {
+      "libelle": "Collatéral TBLLx (T-Bills)",
+      "valeur": {
+        "ltv": 70,
+        "seuil": 80,
+        "bonus": 10,
+        "classe": "tbill",
+        "rendement_param": null,
+        "liquidite": "normale",
+        "adresse_optimism": "0x5f8b2d2b97ad4d63188f44965778f6004d5bc387 (iwTBLLx)"
+      },
+      "unite": "% / % / %",
+      "source": "on-chain OP (Borrow Spoke Aave V4 0xdffc…5308 + legacy DebtManager 0x0078…9553) + code public cash-v3 — Claude Code 28/09/2026",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "D",
+      "ou_trouver": "idem",
+      "note": "Collatéral réel = miroir ether.fi « iwTBLLx » (OFT LayerZero) d'un wrapper ERC-4626 Backed détenu sur Ethereum : dépôt uniquement sous forme wTBLLx sur Ethereum, jamais depuis Solana/Arbitrum/OP. LTV 'app' vu par l'utilisateur ; on-chain : Spoke collateralFactor 80 % (= seuil de liquidation, HF < 1), minHealthFactor 1,1 → capacité d'emprunt ≈ 72,7 % ; legacy DebtManager LTV 70 / seuil 80 / bonus 10 %. Bonus retenu = max on-chain 10 %. Non documenté dans le help center → à confirmer (support). ATTENTION : aucune liquidité DEX pour TBLLx (Jupiter : impact 91–99 %) → achat externe impossible, voie interne uniquement.",
+      "statut_ltv": "DÉFAUT",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_PAXG": {
+      "libelle": "Collatéral PAXG (or)",
+      "valeur": {
+        "ltv": 75,
+        "seuil": 80,
+        "bonus": 10,
+        "classe": "or",
+        "rendement_param": null,
+        "liquidite": "normale",
+        "adresse_optimism": "0x41a7f2bb9789199654c206f09392674c1af6676c (iPAXG)"
+      },
+      "unite": "% / % / %",
+      "source": "on-chain OP (Borrow Spoke Aave V4 0xdffc…5308 + legacy DebtManager 0x0078…9553) + code public cash-v3 — Claude Code 28/09/2026",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "app > page PAXG",
+      "note": "Collatéral réel = « iPAXG » (miroir ether.fi, oracle Chainlink PAXG/USD). PAXG déposable uniquement depuis Ethereum. On-chain : Spoke collateralFactor 80 %, bonus max 10 % ; legacy DebtManager LTV 75 / seuil 80 / bonus 6 %. LTV non vu dans l'app par l'utilisateur → à relever (app > page PAXG).",
+      "statut_ltv": "VÉRIFIÉ",
+      "statut_seuil": "VÉRIFIÉ"
+    },
+    "col_GLDx": {
+      "libelle": "Collatéral GLDx (or tokenisé)",
+      "valeur": {
+        "ltv": null,
+        "seuil": null,
+        "bonus": null,
+        "classe": "or",
+        "rendement_param": null,
+        "liquidite": "normale",
+        "adresse_optimism": null
+      },
+      "unite": "% / % / %",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "D",
+      "ou_trouver": "app > page GLDx",
+      "note": "wGLDx accepté en DÉPÔT (Ethereum) mais NON TROUVÉ comme réserve de collatéral on-chain (28/09/2026) → reste INCONNU.",
+      "statut_ltv": "INCONNU",
+      "statut_seuil": "INCONNU"
+    },
+    "col_SLVx": {
+      "libelle": "Collatéral SLVx (argent)",
+      "valeur": {
+        "ltv": null,
+        "seuil": null,
+        "bonus": null,
+        "classe": "metal",
+        "rendement_param": null,
+        "liquidite": "faible",
+        "adresse_optimism": null
+      },
+      "unite": "% / % / %",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "D",
+      "ou_trouver": "app > page SLVx",
+      "note": "Liquidité probablement faible (courbe en escalier) → spread de sortie élargi par défaut",
+      "statut_ltv": "INCONNU",
+      "statut_seuil": "INCONNU"
+    },
+    "col_PPLTx": {
+      "libelle": "Collatéral PPLTx (platine)",
+      "valeur": {
+        "ltv": null,
+        "seuil": null,
+        "bonus": null,
+        "classe": "metal",
+        "rendement_param": null,
+        "liquidite": "faible",
+        "adresse_optimism": null
+      },
+      "unite": "% / % / %",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "D",
+      "ou_trouver": "app > page PPLTx",
+      "note": "Liquidité probablement faible",
+      "statut_ltv": "INCONNU",
+      "statut_seuil": "INCONNU"
+    },
+    "col_ActionsTokenisees": {
+      "libelle": "Collatéral Actions tokenisées (TSLAx, NVDAx…)",
+      "valeur": {
+        "ltv": null,
+        "seuil": null,
+        "bonus": null,
+        "classe": "action",
+        "rendement_param": null,
+        "liquidite": "normale",
+        "adresse_optimism": null
+      },
+      "unite": "% / % / %",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "D",
+      "ou_trouver": "app > page de l'action",
+      "note": "",
+      "statut_ltv": "INCONNU",
+      "statut_seuil": "INCONNU"
+    },
+    "liquidation_partielle": {
+      "libelle": "Part de la dette remboursée à la 1re liquidation",
+      "valeur": 50,
+      "unite": "%",
+      "source": "help center ether.fi (art. 304388, màj 2026-06-19)",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "D",
+      "ou_trouver": "help center (mécanique de liquidation)",
+      "note": "Si le LTV reste au-dessus du seuil après cette étape, liquidation totale | Sur le Borrow Spoke Aave V4 la liquidation est une enchère hollandaise (HF < 1) : la mécanique « 50 % puis 100 % » est celle documentée par le help center, reproduite par le test weETH."
+    },
+    "spread_sortie_liquidite_faible": {
+      "libelle": "Spread de sortie par défaut pour actifs à liquidité faible",
+      "valeur": 5,
+      "unite": "%",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "D",
+      "ou_trouver": "moi (modifiable)",
+      "note": ""
+    },
+    "spread_eBTC": {
+      "libelle": "Spread de valorisation eBTC / BTC Yield",
+      "valeur": null,
+      "unite": "%",
+      "source": "app ether.fi > Markets vs source publique",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dbis",
+      "ou_trouver": "app > Markets > Staked BTC ; app > Earn > BTC Yield > Your Balance",
+      "note": "Observé 28/09 : BTC Yield valorise 0,03 BTC à 2 772,80 € (~92 400 €/BTC) vs Markets eBTC 73 065,76 € → écart ~21 % À EXPLIQUER (V7). Référence publique CoinGecko 28/09 09:43 UTC : BTC 72 632 €, eBTC 72 725 € (écart +0,13 %).",
+      "reference_publique": {
+        "btc_eur": 72632,
+        "ebtc_eur": 72725,
+        "date": "2026-09-28T09:43Z",
+        "source": "CoinGecko"
+      }
+    },
+    "spread_weETH": {
+      "libelle": "Spread de valorisation weETH / ETH Yield",
+      "valeur": null,
+      "unite": "%",
+      "source": "app ether.fi > Markets vs source publique",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dbis",
+      "ou_trouver": "app > Markets > Staked ETH",
+      "note": "CoinGecko 28/09 : ETH 2 320,54 €, weETH 2 562,81 € (ratio weETH/ETH ≈ 1,104 : normal, le ratio intègre les récompenses de staking)",
+      "reference_publique": {
+        "eth_eur": 2320.54,
+        "weeth_eur": 2562.81,
+        "date": "2026-09-28T09:43Z",
+        "source": "CoinGecko"
+      }
+    },
+    "spread_PAXG": {
+      "libelle": "Spread de valorisation PAXG / or",
+      "valeur": null,
+      "unite": "%",
+      "source": "app ether.fi > Markets vs source publique",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dbis",
+      "ou_trouver": "app > Markets > Gold",
+      "note": "CoinGecko 28/09 : PAXG 3 654,70 € (4 157,99 $) ; comparer au fixing LBMA du jour",
+      "reference_publique": {
+        "paxg_eur": 3654.7,
+        "paxg_usd": 4157.99,
+        "date": "2026-09-28T09:43Z",
+        "source": "CoinGecko"
+      }
+    },
+    "spread_SPYx": {
+      "libelle": "Spread de valorisation SPYx / SPY",
+      "valeur": null,
+      "unite": "%",
+      "source": "app ether.fi > Markets vs source publique",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dbis",
+      "ou_trouver": "app > Markets > Stocks > SPYx",
+      "note": "SPY clôture 25/09/2026 : 771,35 $ (Nasdaq) ; SPYx CoinGecko à relever à la même heure"
+    },
+    "spread_QQQx": {
+      "libelle": "Spread de valorisation QQQx / QQQ",
+      "valeur": null,
+      "unite": "%",
+      "source": "app ether.fi > Markets vs source publique",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dbis",
+      "ou_trouver": "app > Markets > Stocks > QQQx",
+      "note": ""
+    },
+    "spread_TBLLx": {
+      "libelle": "Spread de valorisation TBLLx / BIL",
+      "valeur": null,
+      "unite": "%",
+      "source": "app ether.fi > Markets vs source publique",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dbis",
+      "ou_trouver": "app > Markets > Stocks > TBLLx",
+      "note": ""
+    },
+    "spread_EURC": {
+      "libelle": "Spread de valorisation EURC / 1 €",
+      "valeur": null,
+      "unite": "%",
+      "source": "app ether.fi > Markets vs source publique",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dbis",
+      "ou_trouver": "app > Markets > EURC",
+      "note": "dépeg"
+    },
+    "spread_USDC": {
+      "libelle": "Spread de valorisation USDC / 1 $",
+      "valeur": null,
+      "unite": "%",
+      "source": "app ether.fi > Markets vs source publique",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dbis",
+      "ou_trouver": "app > Markets > USDC",
+      "note": "dépeg"
+    },
+    "choc_spread": {
+      "libelle": "Choc de spread (décote brutale du token wrappé)",
+      "valeur": -5,
+      "unite": "%",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "Dbis",
+      "ou_trouver": "curseur (stress : −20 %)",
+      "note": "Appliqué à un mois donné, distinct de la baisse du sous-jacent"
+    },
+    "choc_spread_mois": {
+      "libelle": "Mois du choc de spread",
+      "valeur": 0,
+      "unite": "mois",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "Dbis",
+      "ou_trouver": "curseur (0 = pas de choc)",
+      "note": ""
+    },
+    "entree_interne_eBTC": {
+      "libelle": "Coût d'entrée voie interne eBTC",
+      "valeur": {
+        "depot_pct": 0.2,
+        "swap_pct": null,
+        "total_pct": null
+      },
+      "unite": "%",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dter",
+      "ou_trouver": "app > Transactions (dépôt) + app > page eBTC > Buy 1 000 USDC « You receive » vs prix de marché à la même minute",
+      "note": "Le dépôt SEPA→EURC (0,20 %) est connu ; le swap dans l'app est à relever"
+    },
+    "entree_externe_eBTC": {
+      "libelle": "Coût d'entrée voie externe eBTC",
+      "valeur": {
+        "exchange_pct": 0.2,
+        "dex_pct": null,
+        "bridge_fixe_usd": 0.4,
+        "gas_usd": null,
+        "total_pct": null
+      },
+      "unite": "% + fixe",
+      "source": "Claude Code (source publique) + utilisateur",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dter",
+      "ou_trouver": "agrégateur (Jupiter / 1inch / CoW) 1 000 $ → quantité reçue ; across.to",
+      "note": "eBTC : même adresse sur Ethereum/Base/Arbitrum/OP (0x657e…C642), déposable depuis Ethereum, Scroll, Base, OP. Marché secondaire mince (CoinGecko : volume 24 h ~49 k$) → devis DEX à relever avant tout achat externe."
+    },
+    "sortie_eBTC": {
+      "libelle": "Coût de sortie eBTC (interne / externe)",
+      "valeur": {
+        "interne_pct": null,
+        "externe_pct": null
+      },
+      "unite": "%",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dter",
+      "ou_trouver": "app > page eBTC > Sell 1 000 € ; swap inverse sur l'agrégateur",
+      "note": ""
+    },
+    "entree_interne_weETH": {
+      "libelle": "Coût d'entrée voie interne weETH",
+      "valeur": {
+        "depot_pct": 0.2,
+        "swap_pct": null,
+        "total_pct": null
+      },
+      "unite": "%",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dter",
+      "ou_trouver": "app > Transactions (dépôt) + app > page weETH > Buy 1 000 USDC « You receive » vs prix de marché à la même minute",
+      "note": "Le dépôt SEPA→EURC (0,20 %) est connu ; le swap dans l'app est à relever"
+    },
+    "entree_externe_weETH": {
+      "libelle": "Coût d'entrée voie externe weETH",
+      "valeur": {
+        "exchange_pct": 0.2,
+        "dex_pct": null,
+        "bridge_fixe_usd": 0.4,
+        "gas_usd": null,
+        "total_pct": null
+      },
+      "unite": "% + fixe",
+      "source": "Claude Code (source publique) + utilisateur",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dter",
+      "ou_trouver": "agrégateur (Jupiter / 1inch / CoW) 1 000 $ → quantité reçue ; across.to",
+      "note": "weETH déposable depuis Ethereum, Scroll, Base, OP ; très liquide (TVL 5,9 Md$) mais devis DEX non relevés (hors périmètre V4)."
+    },
+    "sortie_weETH": {
+      "libelle": "Coût de sortie weETH (interne / externe)",
+      "valeur": {
+        "interne_pct": null,
+        "externe_pct": null
+      },
+      "unite": "%",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dter",
+      "ou_trouver": "app > page weETH > Sell 1 000 € ; swap inverse sur l'agrégateur",
+      "note": ""
+    },
+    "entree_interne_PAXG": {
+      "libelle": "Coût d'entrée voie interne PAXG",
+      "valeur": {
+        "depot_pct": 0.2,
+        "swap_pct": null,
+        "total_pct": null
+      },
+      "unite": "%",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dter",
+      "ou_trouver": "app > Transactions (dépôt) + app > page PAXG > Buy 1 000 USDC « You receive » vs prix de marché à la même minute",
+      "note": "Le dépôt SEPA→EURC (0,20 %) est connu ; le swap dans l'app est à relever"
+    },
+    "entree_externe_PAXG": {
+      "libelle": "Coût d'entrée voie externe PAXG",
+      "valeur": {
+        "exchange_pct": 0.2,
+        "dex_pct": null,
+        "bridge_fixe_usd": 0.4,
+        "gas_usd": null,
+        "total_pct": null
+      },
+      "unite": "% + fixe",
+      "source": "Claude Code (source publique) + utilisateur",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dter",
+      "ou_trouver": "agrégateur (Jupiter / 1inch / CoW) 1 000 $ → quantité reçue ; across.to",
+      "note": "PAXG déposable uniquement depuis Ethereum (help center art. 758804). Devis DEX PAXG non relevés (hors périmètre V4) ; Across ne transporte pas PAXG. Gas Ethereum ≈ 0,7 $ (swap + transfert)."
+    },
+    "sortie_PAXG": {
+      "libelle": "Coût de sortie PAXG (interne / externe)",
+      "valeur": {
+        "interne_pct": null,
+        "externe_pct": null
+      },
+      "unite": "%",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dter",
+      "ou_trouver": "app > page PAXG > Sell 1 000 € ; swap inverse sur l'agrégateur",
+      "note": ""
+    },
+    "entree_interne_SPYx": {
+      "libelle": "Coût d'entrée voie interne SPYx",
+      "valeur": {
+        "depot_pct": 0.2,
+        "swap_pct": null,
+        "total_pct": null
+      },
+      "unite": "%",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dter",
+      "ou_trouver": "app > Transactions (dépôt) + app > page SPYx > Buy 1 000 USDC « You receive » vs prix de marché à la même minute",
+      "note": "Le dépôt SEPA→EURC (0,20 %) est connu ; le swap dans l'app est à relever"
+    },
+    "entree_externe_SPYx": {
+      "libelle": "Coût d'entrée voie externe SPYx",
+      "valeur": {
+        "exchange_pct": 0,
+        "dex_pct": 1.0,
+        "bridge_fixe_usd": 0,
+        "gas_usd": 1.5,
+        "total_pct": null
+      },
+      "unite": "% + fixe",
+      "source": "CoW Swap Ethereum (devis 28/09/2026) + gas Ethereum RPC + help center art. 758804",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "Dter",
+      "ou_trouver": "agrégateur (Jupiter / 1inch / CoW) 1 000 $ → quantité reçue ; across.to",
+      "note": "Seule voie externe menant à un dépôt ether.fi : acheter SPYx sur Ethereum (CoW ~1 % de spread, liquidité de solvers non garantie), wrapper en wSPYx (defi.xstocks.fi/wrap, gas ~0,3 $), déposer sur l'adresse Ethereum du Vault (pont automatique vers OP en iwSPYx, « pas de frais de dépôt »). Gas total ≈ 1,5 $ (approve + swap + wrap + transfert). Variante Solana (Jupiter, impact < 0,2 %) + xBridge CCIP Solana→Ethereum : frais xBridge NON PUBLIÉS (repère CCIP ≈ 1,5 $ + gas) → non chiffrée. Comparer au Buy in-app (min 10 $) une fois « You receive » relevé."
+    },
+    "sortie_SPYx": {
+      "libelle": "Coût de sortie SPYx (interne / externe)",
+      "valeur": {
+        "interne_pct": null,
+        "externe_pct": null
+      },
+      "unite": "%",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dter",
+      "ou_trouver": "app > page SPYx > Sell 1 000 € ; swap inverse sur l'agrégateur",
+      "note": ""
+    },
+    "entree_interne_QQQx": {
+      "libelle": "Coût d'entrée voie interne QQQx",
+      "valeur": {
+        "depot_pct": 0.2,
+        "swap_pct": null,
+        "total_pct": null
+      },
+      "unite": "%",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dter",
+      "ou_trouver": "app > Transactions (dépôt) + app > page QQQx > Buy 1 000 USDC « You receive » vs prix de marché à la même minute",
+      "note": "Le dépôt SEPA→EURC (0,20 %) est connu ; le swap dans l'app est à relever"
+    },
+    "entree_externe_QQQx": {
+      "libelle": "Coût d'entrée voie externe QQQx",
+      "valeur": {
+        "exchange_pct": 0,
+        "dex_pct": 1.0,
+        "bridge_fixe_usd": 0,
+        "gas_usd": 1.5,
+        "total_pct": null
+      },
+      "unite": "% + fixe",
+      "source": "CoW Swap Ethereum (devis 28/09/2026) + gas Ethereum RPC + help center art. 758804",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "Dter",
+      "ou_trouver": "agrégateur (Jupiter / 1inch / CoW) 1 000 $ → quantité reçue ; across.to",
+      "note": "Seule voie externe menant à un dépôt ether.fi : acheter QQQx sur Ethereum (CoW ~1 % de spread, liquidité de solvers non garantie), wrapper en wQQQx (defi.xstocks.fi/wrap, gas ~0,3 $), déposer sur l'adresse Ethereum du Vault (pont automatique vers OP en iwQQQx, « pas de frais de dépôt »). Gas total ≈ 1,5 $ (approve + swap + wrap + transfert). Variante Solana (Jupiter, impact < 0,2 %) + xBridge CCIP Solana→Ethereum : frais xBridge NON PUBLIÉS (repère CCIP ≈ 1,5 $ + gas) → non chiffrée. Comparer au Buy in-app (min 10 $) une fois « You receive » relevé."
+    },
+    "sortie_QQQx": {
+      "libelle": "Coût de sortie QQQx (interne / externe)",
+      "valeur": {
+        "interne_pct": null,
+        "externe_pct": null
+      },
+      "unite": "%",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dter",
+      "ou_trouver": "app > page QQQx > Sell 1 000 € ; swap inverse sur l'agrégateur",
+      "note": ""
+    },
+    "entree_interne_TBLLx": {
+      "libelle": "Coût d'entrée voie interne TBLLx",
+      "valeur": {
+        "depot_pct": 0.2,
+        "swap_pct": null,
+        "total_pct": null
+      },
+      "unite": "%",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dter",
+      "ou_trouver": "app > Transactions (dépôt) + app > page TBLLx > Buy 1 000 USDC « You receive » vs prix de marché à la même minute",
+      "note": "Le dépôt SEPA→EURC (0,20 %) est connu ; le swap dans l'app est à relever"
+    },
+    "entree_externe_TBLLx": {
+      "libelle": "Coût d'entrée voie externe TBLLx",
+      "valeur": {
+        "exchange_pct": 0,
+        "dex_pct": null,
+        "bridge_fixe_usd": 0,
+        "gas_usd": 1.5,
+        "total_pct": null
+      },
+      "unite": "% + fixe",
+      "source": "Claude Code (source publique) + utilisateur",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dter",
+      "ou_trouver": "agrégateur (Jupiter / 1inch / CoW) 1 000 $ → quantité reçue ; across.to",
+      "note": "Aucune liquidité DEX (Jupiter : impact 91–99,6 % ; CoW Ethereum : 3 033 $ pour une NAV ≈ 105 $) → voie externe INUTILISABLE ; voie interne (Buy in-app) uniquement, ou émission primaire Backed (min 5 000 $, 24/5)."
+    },
+    "sortie_TBLLx": {
+      "libelle": "Coût de sortie TBLLx (interne / externe)",
+      "valeur": {
+        "interne_pct": null,
+        "externe_pct": null
+      },
+      "unite": "%",
+      "source": "app ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "Dter",
+      "ou_trouver": "app > page TBLLx > Sell 1 000 € ; swap inverse sur l'agrégateur",
+      "note": ""
+    },
+    "cb_palier1_taux": {
+      "libelle": "Palier 1 EUR (Core) taux",
+      "valeur": 3,
+      "unite": "%",
+      "source": "help center « How does cashback work? » (art. 262374, màj 2026-09-24) + CGU 18/09/2026 — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "E",
+      "ou_trouver": "help center + Transactions",
+      "note": "Confirmé par les achats de sept. 2026 (2,86–2,99 %)"
+    },
+    "cb_palier1_max": {
+      "libelle": "Palier 1 EUR (Core) plafond mensuel",
+      "valeur": 800,
+      "unite": "USD équiv.",
+      "source": "help center « How does cashback work? » (art. 262374, màj 2026-09-24) + CGU 18/09/2026 — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "E",
+      "ou_trouver": "help center",
+      "note": "Texte exact : « EUR: First $800 (USD equivalent, not €) → 3 % ». Un seul compteur mensuel USD+EUR (achats USD : 3 % jusqu'à 2 000 $, 1 % jusqu'à 3 000 $, 0,5 % au-delà). Contrôle utilisateur : ~183 € visibles avant la bascule au 1 % le 20/09 → export à faire (voir QUESTIONS_SUPPORT.md)."
+    },
+    "cb_palier2_taux": {
+      "libelle": "Palier 2 EUR (Core) taux",
+      "valeur": 1,
+      "unite": "%",
+      "source": "help center « How does cashback work? » (art. 262374, màj 2026-09-24) + CGU 18/09/2026 — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "E",
+      "ou_trouver": "help center",
+      "note": ""
+    },
+    "cb_palier2_max": {
+      "libelle": "Palier 2 EUR (Core) plafond mensuel",
+      "valeur": 1500,
+      "unite": "USD équiv.",
+      "source": "help center « How does cashback work? » (art. 262374, màj 2026-09-24) + CGU 18/09/2026 — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "E",
+      "ou_trouver": "help center",
+      "note": ""
+    },
+    "cb_palier3_taux": {
+      "libelle": "Palier 3 EUR (Core) taux",
+      "valeur": 0.1,
+      "unite": "%",
+      "source": "help center « How does cashback work? » (art. 262374, màj 2026-09-24) + CGU 18/09/2026 — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "E",
+      "ou_trouver": "help center",
+      "note": ""
+    },
+    "cb_tier": {
+      "libelle": "Tier de la carte",
+      "valeur": "Core",
+      "unite": "tier",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "E",
+      "ou_trouver": "moi",
+      "note": "Luxe : 3 % jusqu'à 3 000 $ ; Pinnacle : 3 % jusqu'à 16 000 $ (option, non défaut)"
+    },
+    "token_cashback": {
+      "libelle": "Monnaie de paiement du cashback",
+      "valeur": "ETHFI",
+      "unite": "token",
+      "source": "help center « How does cashback work? » (art. 262374, màj 2026-09-24) + CGU 18/09/2026 — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "E",
+      "ou_trouver": "help center",
+      "note": "Vérifié : « earns cashback in ETHFI », converti au cours du règlement, lock 7 j, claim ≥ 5 $. Historique wETH → (USDC ?) → ETHFI (11/09/2026) : sources secondaires contradictoires, aucune source primaire datée (Wayback bloqué). CGU : ether.fi peut changer le token et la méthode de prix."
+    },
+    "cb_lock_jours": {
+      "libelle": "Verrouillage du cashback",
+      "valeur": 7,
+      "unite": "jours",
+      "source": "help center « How does cashback work? » (art. 262374, màj 2026-09-24) + CGU 18/09/2026 — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "E",
+      "ou_trouver": "help center",
+      "note": ""
+    },
+    "cb_min_claim": {
+      "libelle": "Minimum pour réclamer",
+      "valeur": 5,
+      "unite": "USD",
+      "source": "help center « How does cashback work? » (art. 262374, màj 2026-09-24) + CGU 18/09/2026 — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "E",
+      "ou_trouver": "help center",
+      "note": "Réévalué au cours du jour du claim"
+    },
+    "cb_seuil_reel": {
+      "libelle": "Seuil réel de bascule 3 % → 1 % (sept. 2026)",
+      "valeur": null,
+      "unite": "EUR cumulés",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "E",
+      "ou_trouver": "app > Transactions > export",
+      "note": "À recalculer depuis l'export complet des transactions de septembre au taux oracle"
+    },
+    "cb_trade": {
+      "libelle": "Cashback sur trade (swap)",
+      "valeur": 0.12,
+      "unite": "%",
+      "source": "app ether.fi > Transactions (observé)",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "E",
+      "ou_trouver": "app > Transactions > ligne du swap",
+      "note": "Documenté (cashback sur trades, lock 7 j) mais taux non publié ; observé ~0,12 % (0,02 $ sur 17,10 $). Non utilisé par le moteur."
+    },
+    "cb_emprunt": {
+      "libelle": "Cashback sur emprunt",
+      "valeur": null,
+      "unite": "%",
+      "source": "help center ether.fi",
+      "date": "2026-09-28",
+      "statut": "INCONNU",
+      "bloc": "E",
+      "ou_trouver": "app > Cashback ; sinon support",
+      "note": "Documenté (help center 24/09/2026 : « asset traded, or USD/EUR borrowed earns cashback in ETHFI », lock 7 j) mais TAUX NON PUBLIÉ → question support Q5."
+    },
+    "cb_part_exclue": {
+      "libelle": "Part de mes dépenses exclues du cashback",
+      "valeur": 0,
+      "unite": "%",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "E",
+      "ou_trouver": "moi",
+      "note": "loyer (MCC 6513), crypto, ATM, cartes cadeaux, jeux, impôts, P2P"
+    },
+    "cb_strategie": {
+      "libelle": "Stratégie de gestion du cashback",
+      "valeur": "vendre",
+      "unite": "mode",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "E",
+      "ou_trouver": "moi",
+      "note": "« vendre » au claim (défaut) ou « conserver » en ETHFI"
+    },
+    "cb_decote_conversion": {
+      "libelle": "Décote de conversion € → ETHFI chez ether.fi",
+      "valeur": 0,
+      "unite": "%",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "E",
+      "ou_trouver": "comparer le cashback € affiché dans Transactions au nombre d'ETHFI crédité × cours CoinGecko",
+      "note": ""
+    },
+    "cb_travel": {
+      "libelle": "Cashback ether.fi Travel (hôtels)",
+      "valeur": 5,
+      "unite": "%",
+      "source": "help center « How does cashback work? » (art. 262374, màj 2026-09-24) + CGU 18/09/2026 — vérifié par Claude Code",
+      "date": "2026-09-28",
+      "statut": "VÉRIFIÉ",
+      "bloc": "E",
+      "ou_trouver": "help center",
+      "note": "= taux carte + 2 % bonus Travel sur hôtels éligibles (3 % + 2 % = 5 % ; ne remonte pas chaque réservation à 5 %). Non utilisé par défaut."
+    },
+    "scenarios": {
+      "libelle": "Scénarios de marché (variation totale sur l'horizon / drawdown)",
+      "valeur": {
+        "Bear": {
+          "eth_btc": {
+            "var": -60,
+            "dd": -75
+          },
+          "indices": {
+            "var": -30,
+            "dd": -40
+          },
+          "or": {
+            "var": -15,
+            "dd": -25
+          },
+          "stables": {
+            "var": 0,
+            "dd": 0
+          },
+          "ethfi": {
+            "var": -80,
+            "dd": -90
+          },
+          "hype": {
+            "var": -70,
+            "dd": -80
+          }
+        },
+        "Flat": {
+          "eth_btc": {
+            "var": 0,
+            "dd": -40
+          },
+          "indices": {
+            "var": 5,
+            "dd": -20
+          },
+          "or": {
+            "var": 5,
+            "dd": -10
+          },
+          "stables": {
+            "var": 0,
+            "dd": 0
+          },
+          "ethfi": {
+            "var": -30,
+            "dd": -50
+          },
+          "hype": {
+            "var": -20,
+            "dd": -50
+          }
+        },
+        "Bull": {
+          "eth_btc": {
+            "var": 150,
+            "dd": -30
+          },
+          "indices": {
+            "var": 40,
+            "dd": -15
+          },
+          "or": {
+            "var": 30,
+            "dd": -8
+          },
+          "stables": {
+            "var": 0,
+            "dd": 0
+          },
+          "ethfi": {
+            "var": 100,
+            "dd": -40
+          },
+          "hype": {
+            "var": 100,
+            "dd": -40
+          }
+        }
+      },
+      "unite": "% / %",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "F",
+      "ou_trouver": "curseurs dans l'app",
+      "note": "Variation = variation totale du prix entre le mois 0 et la fin de l'horizon (36 ou 48 mois) ; drawdown = pire baisse pic→creux en cours de route, appliquée à un mois choisi. Les valeurs or/hype absentes du cahier des charges sont des propositions à confirmer."
+    },
+    "mc_trajectoires": {
+      "libelle": "Monte Carlo : nombre de trajectoires",
+      "valeur": 10000,
+      "unite": "n",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "F",
+      "ou_trouver": "app",
+      "note": ""
+    },
+    "mc_queues_epaisses": {
+      "libelle": "Monte Carlo : queues épaisses (Student ν = 4)",
+      "valeur": true,
+      "unite": "bool",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "F",
+      "ou_trouver": "app",
+      "note": ""
+    },
+    "mc_seuils_couleur": {
+      "libelle": "Seuils de couleur proba de liquidation",
+      "valeur": {
+        "vert_max": 5,
+        "orange_max": 20
+      },
+      "unite": "%",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "F",
+      "ou_trouver": "app",
+      "note": ""
+    },
+    "mc_dd_duree": {
+      "libelle": "Durée de la chute dans les scénarios fixes",
+      "valeur": 6,
+      "unite": "mois",
+      "source": "utilisateur",
+      "date": "2026-09-28",
+      "statut": "DÉFAUT",
+      "bloc": "F",
+      "ou_trouver": "curseur",
+      "note": ""
+    }
+  }
+}

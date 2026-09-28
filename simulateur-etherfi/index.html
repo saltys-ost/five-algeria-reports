@@ -1,0 +1,830 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulateur ether.fi Cash</title>
+<meta name="description" content="Simule sur 36–48 mois si payer ses dépenses avec la carte ether.fi Cash (Direct Pay ou Borrow sur collatéral) est plus rentable qu'une carte bancaire classique.">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>if (typeof Chart === 'undefined') document.write('<script src="lib/chart.umd.min.js"><\/script>');</script>
+<script src="data/bundle.js"></script>
+<style>
+:root{--bg:#f6f7f9;--panel:#fff;--txt:#1b1f24;--muted:#5d6570;--line:#e2e5ea;--acc:#3b5bdb;--acc2:#7c3aed;--ok:#2f9e44;--warn:#e8590c;--bad:#c92a2a;--blue:#1971c2;--grey:#adb5bd;--radius:10px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#111418;--panel:#1a1f26;--txt:#e7eaee;--muted:#9aa3ad;--line:#2b323b;--acc:#7b93ff;--acc2:#b48cff;--ok:#51cf66;--warn:#ff922b;--bad:#ff6b6b;--blue:#4dabf7;--grey:#6c757d}}
+:root[data-theme="dark"]{--bg:#111418;--panel:#1a1f26;--txt:#e7eaee;--muted:#9aa3ad;--line:#2b323b;--acc:#7b93ff;--acc2:#b48cff;--ok:#51cf66;--warn:#ff922b;--bad:#ff6b6b;--blue:#4dabf7;--grey:#6c757d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:5}
+header h1{font-size:18px;margin:0}
+header .sub{color:var(--muted);font-size:13px}
+nav{display:flex;flex-wrap:wrap;gap:6px;margin-left:auto}
+nav button{background:transparent;border:1px solid var(--line);color:var(--txt);padding:6px 12px;border-radius:20px;cursor:pointer;font-size:13px}
+nav button.active{background:var(--acc);color:#fff;border-color:var(--acc)}
+main{display:grid;grid-template-columns:340px 1fr;gap:16px;padding:16px;max-width:1600px;margin:0 auto}
+@media (max-width:980px){main{grid-template-columns:1fr;padding:12px 16px}}
+aside{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px;align-self:start;position:sticky;top:64px;max-height:calc(100vh - 80px);overflow:auto}
+@media (max-width:980px){aside{position:static;max-height:none}}
+section.tab{display:none}section.tab.active{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:16px}
+.card h2{font-size:17px;margin:0 0 10px}.card h3{font-size:15px;margin:14px 0 6px}
+fieldset{border:1px solid var(--line);border-radius:8px;margin:0 0 12px;padding:8px 10px}
+legend{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;padding:0 4px}
+label.row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:6px 0;font-size:13px}
+label.row span.l{flex:1}
+input[type=number],select,input[type=text]{width:110px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--txt);font-size:13px}
+input[type=range]{width:100%}
+.slider{margin:6px 0}.slider .lab{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+button.btn{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:13px;margin:4px 4px 4px 0}
+button.btn.sec{background:transparent;border:1px solid var(--line);color:var(--txt)}
+button.btn.warn{background:var(--warn)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12px}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.pill{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;color:#fff;white-space:nowrap}
+.pill.CONFIRME{background:var(--ok)}.pill.VERIFIE{background:var(--blue)}.pill.DEFAUT{background:var(--warn)}.pill.INCONNU{background:var(--bad)}.pill.SUPPORT{background:var(--acc2)}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:10px 0}
+.kpi div{border:1px solid var(--line);border-radius:8px;padding:10px}
+.kpi b{display:block;font-size:20px}.kpi small{color:var(--muted)}
+.verdict{border-left:4px solid var(--acc);padding:8px 12px;background:var(--bg);border-radius:6px;margin:8px 0}
+.warnbox{border-left:4px solid var(--warn);padding:8px 12px;background:var(--bg);border-radius:6px;margin:8px 0;font-size:13px}
+.badbox{border-left:4px solid var(--bad);padding:8px 12px;background:var(--bg);border-radius:6px;margin:8px 0;font-size:13px}
+.okbox{border-left:4px solid var(--ok);padding:8px 12px;background:var(--bg);border-radius:6px;margin:8px 0;font-size:13px}
+.muted{color:var(--muted);font-size:13px}
+.schema{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;white-space:pre;overflow:auto;background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--line);line-height:1.45}
+.heat td{text-align:center;cursor:default;min-width:56px;font-size:12px}
+.heat td.v{background:rgba(47,158,68,.35)}.heat td.o{background:rgba(232,89,12,.35)}.heat td.r{background:rgba(201,42,42,.35)}.heat td.g{background:rgba(173,181,189,.35);color:var(--muted)}
+.heat th{position:sticky;left:0;background:var(--panel)}
+canvas{max-height:360px}
+.chartbox{position:relative;height:340px}
+.foot{font-size:12px;color:var(--muted);margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}
+details summary{cursor:pointer;color:var(--acc);font-size:13px}
+.alloc{display:grid;grid-template-columns:1fr 70px;gap:4px 8px;align-items:center;font-size:13px}
+.alloc .dis{color:var(--muted);text-decoration:line-through}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding:30px 12px;overflow:auto;z-index:20}
+.modal.open{display:flex}
+.modal .box{background:var(--panel);border-radius:12px;max-width:1100px;width:100%;padding:18px;border:1px solid var(--line)}
+.scroll{overflow:auto;max-width:100%}
+.tag{font-size:11px;padding:1px 6px;border:1px solid var(--line);border-radius:6px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+.tooltip{position:fixed;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12px;pointer-events:none;display:none;z-index:30;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>Simulateur de rentabilité ether.fi Cash</h1><div class="sub">Carte ether.fi (Direct Pay / Borrow) contre carte bancaire classique, sur 36 ou 48 mois · données datées, statut affiché à côté de chaque paramètre</div></div>
+  <nav id="nav">
+    <button data-tab="resultats" class="active">Résultats</button>
+    <button data-tab="seuils">Seuils &amp; grille</button>
+    <button data-tab="mc">Monte Carlo</button>
+    <button data-tab="stats">Statistiques historiques</button>
+    <button data-tab="donnees">Données</button>
+    <button data-tab="aide">Aide &amp; schémas</button>
+  </nav>
+</header>
+<div id="tooltip" class="tooltip"></div>
+<main>
+<aside id="side">
+  <fieldset><legend>Bloc A — Mon usage</legend>
+    <div class="slider"><div class="lab"><span>Dépenses mensuelles carte</span><b id="v_D"></b></div><input type="range" id="D" min="100" max="4000" step="50"></div>
+    <div class="slider"><div class="lab"><span>Capital en collatéral (Route D)</span><b id="v_C"></b></div><input type="range" id="C" min="0" max="50000" step="250"></div>
+    <label class="row"><span class="l">Horizon</span><select id="N"><option value="36">36 mois</option><option value="48">48 mois</option><option value="12">12 mois</option><option value="24">24 mois</option></select></label>
+    <label class="row"><span class="l">Remboursement du Borrow</span><select id="remb"><option value="100">100 % : dépenses + intérêts du mois (dette remise à 0)</option><option value="0">0 € (je laisse courir)</option><option value="X">Montant fixe / mois</option></select></label>
+    <label class="row" id="rembXrow" style="display:none"><span class="l">Montant remboursé / mois (€)</span><input type="number" id="rembX" value="500" step="50"></label>
+    <label class="row"><span class="l">Tout rembourser au mois (0 = jamais)</span><input type="number" id="rembTout" value="0" min="0" step="1"></label>
+    <label class="row"><span class="l">Marge de sécurité sous le LTV max (%)</span><input type="number" id="marge" step="1" min="0" max="80"></label>
+    <label class="row"><span class="l">Cashback de ma carte actuelle (%)</span><input type="number" id="cbA" step="0.1" min="0"></label>
+    <label class="row"><span class="l">Tier de la carte</span><select id="tier"><option value="Core">Core (3 % → 800 $)</option><option value="Luxe">Luxe (3 % → 3 000 $)</option><option value="Pinnacle">Pinnacle (3 % → 16 000 $)</option></select></label>
+  </fieldset>
+  <fieldset><legend>Routes &amp; modes de paiement</legend>
+    <label class="row"><span class="l">Direct Pay (routes B/C)</span><select id="dpMode"><option value="auto">Devise naturelle de la route (pas de swap)</option><option value="USDC">Direct Pay USDC pour toutes</option><option value="EURC">Direct Pay EURC pour toutes</option></select></label>
+    <label class="row"><span class="l">Devise d'emprunt (route D)</span><select id="borrowCcy"><option value="EURC">EURC</option><option value="USDC">USDC</option></select></label>
+    <label class="row"><span class="l">Taux d'emprunt EURC (%/an)</span><input type="number" id="rEURC" step="0.05" min="0"></label>
+    <label class="row"><span class="l">Taux d'emprunt USDC (%/an)</span><input type="number" id="rUSDC" step="0.05" min="0"></label>
+    <div class="muted">Curseur 1,5 – 4 % : le taux bouge chaque mois (offre/demande du marché de prêt).</div>
+  </fieldset>
+  <fieldset><legend>Collatéral (route D) — répartition en %</legend>
+    <div id="alloc" class="alloc"></div>
+    <div class="muted" id="allocSum"></div>
+    <label class="row"><span class="l">Voie d'acquisition</span><select id="voie"><option value="interne">Interne (app ether.fi)</option><option value="externe">Externe (DEX + bridge)</option></select></label>
+  </fieldset>
+  <fieldset><legend>Cashback (Bloc E)</legend>
+    <label class="row"><span class="l">Stratégie</span><select id="cbStrat"><option value="vendre">Vendre au claim</option><option value="conserver">Conserver en ETHFI</option></select></label>
+    <label class="row"><span class="l">ETHFI conservés comptent en collatéral (LTV 20 %)</span><input type="checkbox" id="cbCollat"></label>
+    <label class="row"><span class="l">Décote de conversion € → ETHFI (%)</span><input type="number" id="cbDecote" step="0.1"></label>
+    <label class="row"><span class="l">Part des dépenses exclues (%)</span><input type="number" id="cbExcl" step="1" min="0" max="100"></label>
+  </fieldset>
+  <fieldset><legend>Bloc F — Scénario de marché</legend>
+    <label class="row"><span class="l">Scénario</span><select id="scen"><option>Bear</option><option selected>Flat</option><option>Bull</option><option value="Perso">Personnalisé</option></select></label>
+    <div id="scenSliders"></div>
+    <div class="slider"><div class="lab"><span>Mois du drawdown</span><b id="v_ddMois"></b></div><input type="range" id="ddMois" min="1" max="48" step="1"></div>
+    <div class="slider"><div class="lab"><span>Durée de la chute (mois)</span><b id="v_ddDuree"></b></div><input type="range" id="ddDuree" min="1" max="12" step="1"></div>
+    <div class="slider"><div class="lab"><span>Choc de spread (token wrappé)</span><b id="v_choc"></b></div><input type="range" id="choc" min="-30" max="0" step="1"></div>
+    <div class="slider"><div class="lab"><span>Mois du choc de spread (0 = aucun)</span><b id="v_chocMois"></b></div><input type="range" id="chocMois" min="0" max="48" step="1"></div>
+  </fieldset>
+  <button class="btn sec" id="btnReset">Réinitialiser aux valeurs vérifiées sept. 2026</button>
+  <button class="btn sec" id="btnExport">Exporter les résultats (CSV)</button>
+</aside>
+<div id="content">
+<section class="tab active" id="tab-resultats">
+  <div class="card"><h2>Comparatif des routes sur l'horizon</h2>
+    <div id="warnParams"></div>
+    <div class="scroll"><table id="tblRoutes"></table></div>
+    <div id="verdicts"></div>
+    <div class="foot" id="footRoutes"></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h2>Graphique 1 — LTV mois par mois (route D)</h2><div class="chartbox"><canvas id="chLTV"></canvas></div><div class="muted">LTV = dette ÷ valeur du collatéral (au prix ether.fi). La ligne rouge est le seuil de liquidation pondéré ; la ligne orange, le LTV max au-delà duquel une dépense carte est refusée.</div></div>
+    <div class="card"><h2>Graphique 2 — Dette cumulée et valeur du collatéral</h2><div class="chartbox"><canvas id="chDette"></canvas></div></div>
+  </div>
+  <div class="card"><h2>Indicateurs (route D)</h2><div class="kpi" id="kpiD"></div>
+    <h3>Cashback : nominal vs net réalisé</h3><div id="cbDetail"></div></div>
+</section>
+
+<section class="tab" id="tab-seuils">
+  <div class="card"><h2>Sens 1 — Je fixe mes dépenses, l'app me dit le capital nécessaire</h2><div id="sens1"></div></div>
+  <div class="card"><h2>Sens 2 — Je fixe mon capital, l'app me dit la dépense soutenable</h2><div id="sens2"></div></div>
+  <div class="card"><h2>Sens 3 — Grille de rentabilité (dépenses × capital)</h2>
+    <div class="muted">Vert : gain net positif vs carte bancaire ET aucune liquidation dans le scénario choisi. Orange : gain net positif mais liquidation dans le scénario Bear. Rouge : perte nette ou liquidation dans le scénario choisi. Gris : capital insuffisant pour couvrir la dépense (LTV). Survolez une case pour le détail.</div>
+    <label class="row" style="max-width:520px"><span class="l">Gain net utilisé pour la couleur</span><select id="gridMode"><option value="hors">hors variation de prix du collatéral</option><option value="avec">avec plus/moins-value latente</option></select></label>
+    <label class="row" style="max-width:520px"><span class="l">Colorer par probabilité de liquidation Monte Carlo (500 trajectoires par case, quelques secondes)</span><input type="checkbox" id="gridMC"></label>
+    <div class="scroll"><table class="heat" id="grid"></table></div>
+    <div class="foot" id="footGrid"></div>
+  </div>
+  <div class="card"><h2>Sens 4 — Point mort cashback vs intérêts</h2><div id="sens4"></div></div>
+  <div class="card"><h2>Point mort collatéral — tenir tout l'horizon sans liquidation en scénario Bear</h2><div id="pointMort"></div></div>
+</section>
+
+<section class="tab" id="tab-mc">
+  <div class="card"><h2>Simulation Monte Carlo</h2>
+    <p class="muted">Chaque trajectoire tire un prix mensuel par actif avec un mouvement brownien géométrique : <code>prix(t+1) = prix(t) × exp((μ − σ²/2)/12 + σ × √(1/12) × ε)</code>. En une phrase : le prix dérive de μ par an, mais chaque mois un aléa ε (proportionnel à la volatilité σ) le pousse au hasard vers le haut ou le bas ; les ε des différents actifs sont corrélés (décomposition de Cholesky de la matrice de corrélation historique), et les queues épaisses (loi de Student ν = 4) autorisent des chocs plus violents que la loi normale.</p>
+    <div class="schema">μ, σ historiques (onglet Statistiques) ──► tirage ε corrélé (Cholesky) ──► prix mensuel de chaque actif
+                                                     │
+                                           moteur mensuel (dette, intérêts, yield, cashback, test de liquidation)
+                                                     │
+                                                     ▼
+                     10 000 trajectoires ──► proba de liquidation · distribution du gain net · éventail collatéral/dette</div>
+    <div id="mcOverrides"></div>
+    <label class="row" style="max-width:420px"><span class="l">Trajectoires</span><select id="mcN"><option>2000</option><option selected>10000</option><option>20000</option></select></label>
+    <label class="row" style="max-width:420px"><span class="l">Queues épaisses (Student ν = 4)</span><input type="checkbox" id="mcFat" checked></label>
+    <button class="btn" id="btnMC">Lancer la simulation</button> <span id="mcStatus" class="muted"></span>
+  </div>
+  <div class="card" id="mcOut" style="display:none">
+    <div class="kpi" id="mcKpi"></div>
+    <div id="mcDist"></div>
+    <div class="grid2">
+      <div><h3>Éventail P5–P95 : valeur du collatéral et dette</h3><div class="chartbox"><canvas id="chFan"></canvas></div></div>
+      <div><h3>Histogramme du gain net final vs carte bancaire</h3><div class="chartbox"><canvas id="chHist"></canvas></div></div>
+    </div>
+    <h3>Où se situent les scénarios fixes dans la distribution ?</h3><div id="mcScen"></div>
+    <h3>Comparaison par actif de collatéral (même capital, même dépenses)</h3><div id="mcAssets"></div>
+    <div class="foot" id="footMC"></div>
+  </div>
+</section>
+
+<section class="tab" id="tab-stats">
+  <div class="card"><h2>Statistiques historiques par actif</h2>
+    <p class="muted">Calculées à partir des fichiers <code>data/prix/*.csv</code> téléchargés par <code>scripts/telecharger_prix.py</code> (sources : Kraken pour BTC/ETH/PAXG/ETHFI/HYPE, Nasdaq pour SPY/QQQ/BIL/GLD, CoinGecko pour les xStocks et tokens ether.fi, 365 jours max). μ = moyenne des rendements log quotidiens × 365 (252 pour les indices) ; σ = écart-type × √365 (√252). Un historique de moins d'un an est en orange : proxy proposé, à confirmer.</p>
+    <div class="scroll"><table id="tblStats"></table></div>
+    <h3>Matrice de corrélation (rendements quotidiens, dates communes)</h3>
+    <div class="scroll"><table id="tblCorr"></table></div>
+    <div class="muted">ETH et BTC chutent ensemble : un collatéral « diversifié » ETH + BTC protège moins qu'on ne croit. Les indices et l'or sont moins corrélés aux cryptos.</div>
+  </div>
+</section>
+
+<section class="tab" id="tab-donnees">
+  <div class="card"><h2>Panneau Données</h2>
+    <div class="muted">Pastilles : <span class="pill CONFIRME">CONFIRMÉ</span> validé par vous (ou par le support : <span class="pill SUPPORT">SUPPORT</span>, engage moins qu'une documentation) · <span class="pill VERIFIE">VÉRIFIÉ</span> lu par Claude Code dans une source publique · <span class="pill DEFAUT">DÉFAUT</span> valeur datée du cahier des charges, non revalidée · <span class="pill INCONNU">INCONNU</span> bloque l'actif ou le calcul concerné.</div>
+    <div id="dataWarn"></div>
+    <p><button class="btn" id="btnUpdate">Mettre à jour les données (interrogatoire bloc par bloc)</button>
+       <button class="btn sec" id="btnDlParams">Télécharger parametres.json (avec mes réponses)</button>
+       <label class="btn sec" style="display:inline-block">Importer un parametres.json <input type="file" id="fileParams" accept=".json" style="display:none"></label></p>
+    <div class="scroll"><table id="tblParams"></table></div>
+    <h3>Spreads de valorisation (Bloc D bis)</h3><div id="tblSpreads"></div>
+    <h3>Voies d'acquisition (Bloc D ter)</h3><div id="tblVoies"></div>
+  </div>
+</section>
+
+<section class="tab" id="tab-aide">
+  <div class="card"><h2>Comment lire cette app</h2>
+    <h3>Les quatre routes comparées</h3>
+    <div class="schema">Route A   carte bancaire classique ───────────────────────────────► référence (coût 0, cashback = ma carte)
+Route B1  EUR ─SEPA 0,20 %─► EURC sur ether.fi ─► Direct Pay ────► cashback ETHFI
+Route B2  EUR ─SEPA 0,17 % + spread FX─► USDC ─► Direct Pay ─────► cashback ETHFI
+Route C   EUR ─exchange─► USDC ─bridge (fixe)─► Direct Pay ───────► cashback ETHFI
+Route D   capital ─► collatéral déposé une fois ─► Borrow : dette + intérêts, collatéral qui rapporte, risque de liquidation</div>
+    <h3>Le moteur mensuel (route D)</h3>
+    <div class="schema">mois t
+  1. dépenses du mois D ──► cashback selon le barème progressif (3 % → 1 % → 0,1 %), payé en ETHFI
+  2. dette += D (refusée si dette/collatéral dépasserait le LTV max) ; dette ×= (1 + taux/12)
+  3. collatéral : unités ×= (1 + yield/12) ; valeur = unités × prix ether.fi du scénario (avec choc de spread éventuel)
+  4. LTV = dette / valeur ──► si LTV > seuil : liquidation (50 % de la dette remboursée, bonus au liquidateur ; si toujours > seuil : tout)
+  5. remboursement : 100 % (dépenses + intérêts du mois, dette remise à 0 = revolving) / 0 / X € / tout au mois N
+  6. routes B et C : frais de recharge du mois
+mois t+1 …</div>
+    <h3>Pourquoi le collatéral doit couvrir la dette cumulée</h3>
+    <p>En Borrow mode, 1 000 €/mois pendant 12 mois sans rembourser = 12 000 € de dette (plus les intérêts), que 3 000 € de collatéral ne couvrent jamais. Ce qui rend le mécanisme viable : soit rembourser chaque mois (le collatéral ne couvre qu'un mois, ≈ 1 400 € en stables), soit un capital bien supérieur aux dépenses cumulées.</p>
+    <h3>Liquidation — test contre l'exemple officiel weETH</h3><div id="testLiq"></div>
+    <h3>Cashback en ETHFI</h3>
+    <div class="schema">achat validé ──► cashback en € ──► converti en ETHFI (cours du règlement) ──► lock 7 jours ──► claim (≥ 5 $) ──► swap ETHFI → EURC (frais)</div>
+    <h3>Hypothèses simplificatrices</h3>
+    <ul class="muted">
+      <li>Le taux EUR/USD est constant sur l'horizon (pas de risque de change modélisé sur USDC / dette USDC).</li>
+      <li>Les ordres du mois : dépense, intérêts, mouvement de prix, test de liquidation, remboursement. Les intérêts sont composés mensuellement.</li>
+      <li>Les paramètres INCONNU (frais de swap, seuils de liquidation des xStocks…) ne sont jamais remplacés par une valeur inventée : l'actif est grisé, ou le calcul est fait sans ce frais et signalé.</li>
+      <li>Dans les scénarios fixes, la « variation » est la variation totale du prix entre le mois 0 et la fin de l'horizon (pas un taux annuel) ; le drawdown est appliqué en V autour du mois choisi. Le Monte Carlo n'a pas besoin de ces hypothèses : il tire les prix mois par mois avec μ et σ historiques (annuels).</li>
+    </ul>
+  </div>
+</section>
+</div>
+</main>
+<div class="modal" id="modal"><div class="box" id="modalBox"></div></div>
+<script>
+/* =====================================================================
+   COUCHE DONNÉES : paramètres (bundle + overrides localStorage)
+   ===================================================================== */
+const RAW = window.ETHERFI_DATA || null;
+if (!RAW) { document.body.innerHTML = '<div class="card" style="margin:40px">Fichier <code>data/bundle.js</code> introuvable. Lancez d\'abord <code>python3 scripts/telecharger_prix.py</code> (ou <code>python3 scripts/generer_bundle.py</code>) dans le dossier du simulateur.</div>'; }
+const LS_KEY = 'etherfi_sim_overrides_v1', LS_CFG = 'etherfi_sim_cfg_v1';
+const clone = o => JSON.parse(JSON.stringify(o));
+let PARAMS = clone(RAW.parametres.parametres);
+function applyOverrides(){
+  PARAMS = clone(RAW.parametres.parametres);
+  try { const ov = JSON.parse(localStorage.getItem(LS_KEY) || '{}'); for (const k in ov) if (PARAMS[k]) Object.assign(PARAMS[k], ov[k]); } catch(e){}
+}
+applyOverrides();
+const pv = k => (PARAMS[k] ? PARAMS[k].valeur : null);
+const pnum = (k, def=0) => { const v = pv(k); return (v===null||v===undefined||isNaN(+v)) ? def : +v; };
+const isKnown = k => PARAMS[k] && PARAMS[k].statut !== 'INCONNU' && pv(k) !== null && pv(k) !== undefined;
+const statutClass = s => ({ 'CONFIRMÉ':'CONFIRME','VÉRIFIÉ':'VERIFIE','DÉFAUT':'DEFAUT','INCONNU':'INCONNU' }[s] || 'DEFAUT');
+const fmtE = (x, d=0) => (x===null||x===undefined||isNaN(x)) ? '—' : x.toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d})+' €';
+const fmtP = (x, d=1) => (x===null||x===undefined||isNaN(x)) ? '—' : (x*100).toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d})+' %';
+const fmtN = (x, d=2) => (x===null||x===undefined||isNaN(x)) ? '—' : x.toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d});
+
+/* Registre des actifs de collatéral, dérivé des paramètres col_* */
+const CLASSE_SCEN = { stable:'stables', stable_eur:'stables', tbill:'stables', eth:'eth_btc', btc:'eth_btc', sp500:'indices', nasdaq:'indices', action:'indices', or:'or', metal:'or', ethfi:'ethfi', alt:'ethfi', hype:'hype' };
+const CLASSE_HISTO = { stable:null, stable_eur:null, tbill:'BIL', eth:'ETH', btc:'BTC', sp500:'SPY', nasdaq:'QQQ', action:null, or:'GLD', metal:null, ethfi:'ETHFI', alt:'ETHFI', hype:'HYPE' };
+const CLASSE_EUR = { stable_eur:true };   // libellé en EUR : pas d'exposition EUR/USD
+function assets(){
+  const out = [];
+  for (const k in PARAMS){ if (!k.startsWith('col_')) continue; const p = PARAMS[k]; const v = p.valeur || {};
+    const ok = p.statut !== 'INCONNU' && v.ltv!==null && v.seuil!==null && v.bonus!==null && v.ltv!==undefined && v.seuil!==undefined && v.bonus!==undefined;
+    const rk = v.rendement_param; const yieldPct = rk && isKnown(rk) ? pnum(rk) : 0;
+    out.push({ key:k.slice(4), label:p.libelle.replace('Collatéral ',''), ltv:v.ltv/100, seuil:v.seuil/100, bonus:(v.bonus||0)/100, classe:v.classe, scen:CLASSE_SCEN[v.classe]||'stables', histo:CLASSE_HISTO[v.classe]||null, yield:yieldPct/100, yieldKey:rk, ok, statut:p.statut, statut_ltv:p.statut_ltv, statut_seuil:p.statut_seuil, liquidite:v.liquidite||'normale', note:p.note||'', eur:!!CLASSE_EUR[v.classe] });
+  }
+  return out;
+}
+
+/* =====================================================================
+   MOTEUR : cashback, trajectoires de prix, simulation mensuelle
+   ===================================================================== */
+function tierCaps(tier){
+  // plafonds mensuels en USD équivalent pour les achats en EUR (help center 24/09/2026)
+  if (tier==='Luxe') return { p1:3000, p2:1500+3000-800 };
+  if (tier==='Pinnacle') return { p1:16000, p2:16000+700 };
+  return { p1:pnum('cb_palier1_max',800), p2:pnum('cb_palier2_max',1500) };
+}
+function cashbackMois(D_eur, cfg){
+  const elig = D_eur * (1 - cfg.cbExcl/100);
+  const usd = elig * cfg.eurusd; const caps = tierCaps(cfg.tier);
+  const t1 = Math.min(usd, caps.p1), t2 = Math.min(Math.max(usd-caps.p1,0), Math.max(caps.p2-caps.p1,0)), t3 = Math.max(usd-caps.p2,0);
+  const cb_usd = t1*cfg.cb1 + t2*cfg.cb2 + t3*cfg.cb3;
+  return { nominal: cb_usd/cfg.eurusd, tauxMoyen: D_eur>0 ? (cb_usd/cfg.eurusd)/D_eur : 0 };
+}
+/* Trajectoire de prix d'un scénario fixe : tendance géométrique (variation totale sur l'horizon) + creux en V (log-linéaire) au mois ddMois */
+function pathPrix(N, varTot, dd, ddMois, duree){
+  const g = Math.pow(1+varTot, 1/N); const trend = t => Math.pow(g, t);
+  const p = new Float64Array(N+1); for (let t=0;t<=N;t++) p[t] = trend(t);
+  if (dd < 0 && ddMois >= 1 && ddMois <= N){
+    const a = Math.max(0, ddMois-duree), b = Math.min(N, ddMois+duree);
+    let peak = 0; for (let t=0;t<=a;t++) peak = Math.max(peak, trend(t));
+    const target = Math.min(peak*(1+dd), trend(ddMois));
+    const la = Math.log(trend(a)), lt = Math.log(target), lb = Math.log(trend(b));
+    for (let t=a;t<=ddMois;t++){ const w = ddMois===a ? 1 : (t-a)/(ddMois-a); p[t] = Math.exp(la + (lt-la)*w); }
+    for (let t=ddMois;t<=b;t++){ const w = b===ddMois ? 1 : (t-ddMois)/(b-ddMois); p[t] = Math.exp(lt + (lb-lt)*w); }
+  }
+  return p;
+}
+/* Liquidation : rembourse 50 % de la dette (bonus au liquidateur en collatéral) ; si toujours > seuil, tout.
+   Renvoie {dette, collat, perteBonus, type} */
+function liquider(dette, collat, seuil, bonus, part){
+  let perteBonus = 0, type = 'partielle';
+  const rep1 = dette*part; const saisi1 = Math.min(collat, rep1*(1+bonus)); collat -= saisi1; dette -= rep1; perteBonus += rep1*bonus;
+  if (collat<=0 || dette/collat > seuil){ type='totale'; const saisi2 = Math.min(collat, dette*(1+bonus)); const rep2 = saisi2/(1+bonus); collat -= saisi2; perteBonus += rep2*bonus; dette -= rep2; if (dette<1e-9) dette=0; }
+  return { dette, collat, perteBonus, type };
+}
+/* Configuration courante → objet cfg utilisé par le moteur */
+function buildCfg(over={}){
+  const s = state;
+  const cfg = {
+    D:s.D, C:s.C, N:s.N, tier:s.tier, cbA:s.cbA/100, marge:s.marge/100,
+    remb:s.remb, rembX:s.rembX, rembTout:s.rembTout,
+    dpMode:s.dpMode, borrowCcy:s.borrowCcy, rEURC:s.rEURC/100, rUSDC:s.rUSDC/100,
+    alloc:s.alloc, voie:s.voie, cbStrat:s.cbStrat, cbCollat:s.cbCollat, cbDecote:s.cbDecote/100, cbExcl:s.cbExcl,
+    scen:s.scen, scenVals:s.scenVals, ddMois:s.ddMois, ddDuree:s.ddDuree, choc:s.choc/100, chocMois:s.chocMois,
+    eurusd:pnum('eurusd',1.14), cb1:pnum('cb_palier1_taux',3)/100, cb2:pnum('cb_palier2_taux',1)/100, cb3:pnum('cb_palier3_taux',0.1)/100,
+    fSepaEurc:pnum('frais_depot_sepa_eurc')/100, fSepaUsdc:pnum('frais_depot_sepa_usdc')/100, fFx:pnum('spread_fx_usdc')/100,
+    fSwapUsdcEurc: isKnown('swap_usdc_eurc') ? pnum('swap_usdc_eurc')/100 : 0, swapUsdcEurcInconnu: !isKnown('swap_usdc_eurc'),
+    fExch:pnum('achat_usdc_exchange')/100, bridgeFixe:pnum('bridge_fixe',0.4), fDpSpread:pnum('spread_directpay_usdc')/100,
+    supply:pnum('taux_supply_directpay')/100, fSwapEthfi: isKnown('swap_ethfi_eurc') ? pnum('swap_ethfi_eurc')/100 : 0, swapEthfiInconnu: !isKnown('swap_ethfi_eurc'),
+    partLiq:pnum('liquidation_partielle',50)/100, prixEthfi:pnum('prix_ethfi',0.665)/pnum('eurusd',1.14),
+    spreadSortieFaible:pnum('spread_sortie_liquidite_faible',5)/100,
+  };
+  return Object.assign(cfg, over);
+}
+/* Coût d'entrée / sortie connus (parties renseignées seulement) pour un actif et une voie */
+function coutEntree(assetKey, voie){
+  const p = PARAMS['entree_'+voie+'_'+assetKey]; let pct = 0, fixe = 0, inconnu = false;
+  if (p && p.valeur){ const v = p.valeur; if (v.total_pct!=null) return { pct:v.total_pct/100, fixe:0, inconnu:false };
+    for (const k of ['depot_pct','swap_pct','exchange_pct','dex_pct']) { if (v[k]==null){ if (k in v) inconnu = true; } else pct += v[k]/100; }
+    for (const k of ['bridge_fixe_usd','gas_usd']) { if (v[k]==null){ if (k in v) inconnu = true; } else fixe += v[k]; }
+  } else { // stables et autres : dépôt SEPA seulement en interne ; exchange + bridge en externe
+    if (voie==='interne') pct = pnum('frais_depot_sepa_eurc')/100; else { pct = pnum('achat_usdc_exchange')/100; fixe = pnum('bridge_fixe',0.4); }
+  }
+  return { pct, fixe: fixe/pnum('eurusd',1.14), inconnu };
+}
+function coutSortie(assetKey, voie, asset){
+  const p = PARAMS['sortie_'+assetKey]; let pct = null;
+  if (p && p.valeur) pct = voie==='interne' ? p.valeur.interne_pct : p.valeur.externe_pct;
+  if (pct==null) pct = (asset && asset.liquidite==='faible') ? pnum('spread_sortie_liquidite_faible',5) : 0;
+  return pct/100;
+}
+/* Construit les trajectoires de prix (facteur ×) pour chaque actif alloué + ETHFI, selon le scénario fixe */
+function pricePathsScenario(cfg, list){
+  const vals = cfg.scenVals; const paths = {};
+  for (const a of list){ const sv = vals[a.scen] || {var:0,dd:0}; paths[a.key] = pathPrix(cfg.N, sv.var/100, sv.dd/100, cfg.ddMois, cfg.ddDuree); }
+  const se = vals.ethfi || {var:0,dd:0}; paths.__ETHFI = pathPrix(cfg.N, se.var/100, se.dd/100, cfg.ddMois, cfg.ddDuree);
+  return paths;
+}
+/* ---------- SIMULATION D'UNE CONFIGURATION ----------
+   paths : {assetKey: Float64Array(N+1) facteur de prix, __ETHFI: ...}
+   yields : optionnel {assetKey: Float64Array(N+1) rendement annuel du mois}
+   Renvoie les résultats des routes A, B1, B2, C, D. */
+function simulate(cfg, paths, yields){
+  const N = cfg.N, D = cfg.D;
+  const ethfiP = paths.__ETHFI;
+  // ETHFI : variation sur 7 jours dérivée de la trajectoire mensuelle (interpolation) ou fournie (MC : paths.__ETHFI7)
+  const r7 = t => paths.__ETHFI7 ? paths.__ETHFI7[t] : (Math.pow(ethfiP[t]/ethfiP[t-1], 7/30.4) - 1);
+  const cbNet = (nominal, t) => cfg.cbStrat==='vendre' ? nominal*(1+r7(t))*(1-cfg.cbDecote)*(1-cfg.fSwapEthfi) : null;
+  // ----- routes A, B1, B2, C (Direct Pay) -----
+  const cb = cashbackMois(D, cfg); let cbNomTot = 0, cbNetTot = 0, ethfiUnits = 0;
+  for (let t=1;t<=N;t++){ cbNomTot += cb.nominal; if (cfg.cbStrat==='vendre') cbNetTot += cbNet(cb.nominal,t); else ethfiUnits += cb.nominal*(1-cfg.cbDecote)/(cfg.prixEthfi*ethfiP[t]); }
+  if (cfg.cbStrat==='conserver') cbNetTot = ethfiUnits*cfg.prixEthfi*ethfiP[N]*(1-cfg.fSwapEthfi);
+  const cbA = D*cfg.cbA*N;
+  const idleYield = (D/2)*cfg.supply/12*N;
+  // devise de paiement effective de chaque route : naturelle (B1 → EURC, B2/C → USDC) ou forcée
+  const pay = nat => cfg.dpMode==='auto' ? nat : cfg.dpMode;
+  const swapNote = (from, to) => ' + swap '+from+'→'+to+' à chaque recharge'+(cfg.swapUsdcEurcInconnu?' (frais INCONNU, compté 0)':' ('+fmtP(cfg.fSwapUsdcEurc,2)+')');
+  const dpCost = ccy => ccy==='USDC' ? D*cfg.fDpSpread*N : 0;   // spread éventuel de conversion sur un achat EUR payé en USDC
+  const mkRoute = (nom, frais, note) => ({ nom, frais, interets:0, cashbackNom:cbNomTot, cashbackNet:cbNetTot, yieldCollat:idleYield, pv:0, perteLiq:0, gainNetHors: cbNetTot + idleYield - frais - cbA, gainNetAvec: cbNetTot + idleYield - frais - cbA, note, ethfiUnits });
+  const A = { nom:'A — Carte bancaire classique', frais:0, interets:0, cashbackNom:cbA, cashbackNet:cbA, yieldCollat:0, pv:0, perteLiq:0, gainNetHors:0, gainNetAvec:0, note:'référence', ethfiUnits:0 };
+  const pB1 = pay('EURC'), pB2 = pay('USDC'), pC = pay('USDC');
+  const B1 = mkRoute('B1 — SEPA → EURC → Direct Pay '+pB1, D*cfg.fSepaEurc*N + (pB1==='USDC' ? D*cfg.fSwapUsdcEurc*N : 0) + dpCost(pB1), 'dépôt 0,20 %'+(pB1==='USDC' ? swapNote('EURC','USDC') : ', paiement 1:1 sans conversion'));
+  const B2 = mkRoute('B2 — SEPA → USDC → Direct Pay '+pB2, D*(cfg.fSepaUsdc+cfg.fFx)*N + (pB2==='EURC' ? D*cfg.fSwapUsdcEurc*N : 0) + dpCost(pB2), 'frais explicites '+fmtP(cfg.fSepaUsdc,2)+' + spread FX '+fmtP(cfg.fFx,2)+(pB2==='EURC' ? swapNote('USDC','EURC') : ''));
+  const Cr = mkRoute('C — Exchange → bridge → Direct Pay '+pC, D*cfg.fExch*N + cfg.bridgeFixe/cfg.eurusd*N*state.freq + (pC==='EURC' ? D*cfg.fSwapUsdcEurc*N : 0) + dpCost(pC), 'achat USDC '+fmtP(cfg.fExch,2)+' + bridge '+fmtN(cfg.bridgeFixe)+' $ fixe par recharge'+(pC==='EURC' ? swapNote('USDC','EURC') : ''));
+  // ----- route D : Borrow sur collatéral -----
+  const list = assets().filter(a => a.ok && (cfg.alloc[a.key]||0) > 0);
+  const totalPct = list.reduce((s,a)=>s+cfg.alloc[a.key],0);
+  const r = cfg.borrowCcy==='EURC' ? cfg.rEURC : cfg.rUSDC;
+  const serie = { ltv:[], ltvIntra:[], seuil:[], ltvMax:[], dette:[], collat:[], liq:[] };
+  let detteMaxIntra = 0, dette = 0, interets = 0, cbNomD = 0, cbNetD = 0, ethfiD = 0, perteLiq = 0, moisLiq = null, nbLiq = 0, refus = 0, premierRefus = null, yieldTot = 0, fraisEntree = 0, entreeInconnu = false;
+  const pos = list.map(a => { const ce = coutEntree(a.key, cfg.voie); if (ce.inconnu) entreeInconnu = true; const cap = cfg.C*cfg.alloc[a.key]/totalPct; const net = Math.max(0, cap*(1-ce.pct) - ce.fixe); fraisEntree += cap-net; return { a, units: net, cap }; });
+  const val = t => { let v = 0; for (const p of pos){ let f = paths[p.a.key][t]; if (cfg.chocMois>0 && t>=cfg.chocMois && p.a.classe!=='stable' && p.a.classe!=='stable_eur') f *= (1+cfg.choc); v += p.units*f; } if (cfg.cbStrat==='conserver' && cfg.cbCollat) v += ethfiD*cfg.prixEthfi*ethfiP[t]; return v; };
+  const wLtv = t => { let v=0,s=0,m=0,b=0; for (const p of pos){ const x = p.units*paths[p.a.key][t]; v+=x; s+=x*p.a.seuil; m+=x*p.a.ltv; b+=x*p.a.bonus; } if (cfg.cbStrat==='conserver'&&cfg.cbCollat){ const x=ethfiD*cfg.prixEthfi*ethfiP[t]; v+=x; s+=x*0.5; m+=x*0.2; b+=x*0.05; } return v>0 ? {seuil:s/v, ltv:m/v, bonus:b/v} : {seuil:0.95, ltv:0.9, bonus:0.01}; };
+  let v0 = val(0); serie.dette.push(0); serie.collat.push(v0); serie.ltv.push(0); serie.ltvIntra.push(0); const w0 = wLtv(0); serie.seuil.push(w0.seuil); serie.ltvMax.push(w0.ltv); serie.liq.push(0);
+  let capaciteOK = list.length>0 && v0>0;
+  for (let t=1;t<=N;t++){
+    // 1. dépense → cashback
+    const c = cashbackMois(D, cfg); const w = wLtv(t);
+    // 2. dette (refus si dépasse le LTV max)
+    const vAvant = val(t);
+    if (!capaciteOK || dette + D > w.ltv*vAvant){ refus++; if (premierRefus===null) premierRefus = t; }
+    else { dette += D; cbNomD += c.nominal; if (cfg.cbStrat==='vendre') cbNetD += cbNet(c.nominal,t); else ethfiD += c.nominal*(1-cfg.cbDecote)/(cfg.prixEthfi*ethfiP[t]); }
+    const i = dette*r/12; dette += i; interets += i; if (dette>detteMaxIntra) detteMaxIntra = dette;
+    // 3. collatéral : yield (unités) puis prix
+    for (const p of pos){ const y = yields && yields[p.a.key] ? yields[p.a.key][t] : p.a.yield; const g = p.units*(y/12); p.units += g; yieldTot += g*paths[p.a.key][t]; }
+    let v = val(t);
+    // 4. test de liquidation
+    let liqFlag = 0;
+    if (dette>0 && v>0 && dette/v > w.seuil){ const L = liquider(dette, v, w.seuil, w.bonus, cfg.partLiq); perteLiq += L.perteBonus; const ratio = v>0 ? L.collat/v : 0; for (const p of pos) p.units *= ratio; if (cfg.cbStrat==='conserver'&&cfg.cbCollat) ethfiD *= ratio; dette = L.dette; v = val(t); nbLiq++; liqFlag = L.type==='totale'?2:1; if (moisLiq===null) moisLiq = t; }
+    else if (dette>0 && v<=0){ perteLiq += 0; liqFlag = 2; if (moisLiq===null) moisLiq = t; }
+    serie.ltvIntra.push(v>0 ? dette/v : (dette>0?9:0));
+    // 5. remboursement
+    let R = 0; if (cfg.remb==='100') R = dette; else if (cfg.remb==='X') R = Math.min(dette, cfg.rembX); if (cfg.rembTout>0 && t>=cfg.rembTout) R = dette; dette -= R;
+    serie.dette.push(dette); serie.collat.push(v); serie.ltv.push(v>0 ? dette/v : (dette>0?9:0)); serie.seuil.push(w.seuil); serie.ltvMax.push(w.ltv); serie.liq.push(liqFlag);
+  }
+  if (cfg.cbStrat==='conserver') cbNetD = ethfiD*cfg.prixEthfi*ethfiP[N]*(1-cfg.fSwapEthfi);
+  const vFin = val(N); let sortie = 0; for (const p of pos){ sortie += p.units*paths[p.a.key][N]*coutSortie(p.a.key, cfg.voie, p.a); }
+  // plus/moins-value latente due au prix seul : valeur finale nette de sortie − capital net investi − yield (compté à part) + bonus de liquidation (compté à part)
+  const pvPrix = (vFin - sortie) - (cfg.C - fraisEntree) - yieldTot + perteLiq;
+  const cbA_D = D*cfg.cbA*N;
+  const Droute = { nom:'D — Collatéral → Borrow mode', frais: fraisEntree + sortie, interets, cashbackNom:cbNomD, cashbackNet:cbNetD, yieldCollat:yieldTot, pv:pvPrix, perteLiq, ethfiUnits:ethfiD,
+    gainNetHors: cbNetD + yieldTot - interets - fraisEntree - sortie - perteLiq - cbA_D, gainNetAvec: 0, moisLiq, nbLiq, refus, premierRefus, serie, entreeInconnu, dette, collatFin:vFin, note: list.length? (cfg.borrowCcy+' à '+fmtP(r,2)+' ; collatéral '+list.map(a=>a.label.split(' (')[0]+' '+Math.round(cfg.alloc[a.key]*100/totalPct)+' %').join(', ')) : 'aucun actif de collatéral disponible' };
+  Droute.gainNetAvec = Droute.gainNetHors + pvPrix;
+  // baisse de prix maximale supportable avant liquidation (dette de fin de période / seuil pondéré)
+  const detteMax = detteMaxIntra;
+  const wN = wLtv(0); Droute.baisseMax = (v0>0 && detteMax>0) ? 1 - detteMax/(wN.seuil*v0) : null;
+  Droute.detteMax = detteMax;
+  return { A, B1, B2, C:Cr, D:Droute, cb, list, totalPct };
+}
+</script>
+<script>
+/* =====================================================================
+   STATISTIQUES HISTORIQUES (lecture des CSV via le bundle)
+   ===================================================================== */
+const PPY = { BTC:365, ETH:365, PAXG:365, ETHFI:365, HYPE:365, SPY:252, QQQ:252, BIL:252, GLD:252, SPYx:365, QQQx:365, TBLLx:365, GLDx:365, eBTC:365, weETH:365 };
+const STATS = {};
+function computeStats(){
+  const prix = RAW.prix || {};
+  for (const k in prix){
+    const s = prix[k]; const n = s.close.length; if (n < 10) continue;
+    const ppy = PPY[k] || 365;
+    const dailyR = [], dailyDates = []; let logTot = 0;
+    for (let i=1;i<n;i++){ const lr = Math.log(s.close[i]/s.close[i-1]); logTot += lr; if (s.frequence[i]==='daily' && s.frequence[i-1]==='daily') { dailyR.push(lr); dailyDates.push(s.dates[i]); } }
+    const d0 = new Date(s.dates[0]), d1 = new Date(s.dates[n-1]); const years = (d1-d0)/(365.25*864e5);
+    const mu = logTot/years;
+    let sd; if (dailyR.length >= 30){ const m = dailyR.reduce((a,b)=>a+b,0)/dailyR.length; sd = Math.sqrt(dailyR.reduce((a,b)=>a+(b-m)*(b-m),0)/(dailyR.length-1))*Math.sqrt(ppy); }
+    else { const wr=[]; for (let i=1;i<n;i++) wr.push(Math.log(s.close[i]/s.close[i-1])); const m = wr.reduce((a,b)=>a+b,0)/wr.length; sd = Math.sqrt(wr.reduce((a,b)=>a+(b-m)*(b-m),0)/(wr.length-1))*Math.sqrt(52); }
+    // drawdown max
+    let peak = -Infinity, mdd = 0, mddDate=''; for (let i=0;i<n;i++){ peak = Math.max(peak, s.close[i]); const dd = s.close[i]/peak-1; if (dd<mdd){ mdd=dd; mddDate=s.dates[i]; } }
+    // pire mois / pire trimestre (clôtures de fin de mois)
+    const monthEnd = {}; for (let i=0;i<n;i++) monthEnd[s.dates[i].slice(0,7)] = s.close[i];
+    const mk = Object.keys(monthEnd).sort(); let worstM = 0, worstMk='', worstQ = 0, worstQk='';
+    for (let i=1;i<mk.length;i++){ const r = monthEnd[mk[i]]/monthEnd[mk[i-1]]-1; if (r<worstM){worstM=r;worstMk=mk[i];} if (i>=3){ const q = monthEnd[mk[i]]/monthEnd[mk[i-3]]-1; if (q<worstQ){worstQ=q;worstQk=mk[i];} } }
+    STATS[k] = { mu, sigma:sd, variance:sd*sd, mdd, mddDate, worstM, worstMk, worstQ, worstQk, debut:s.dates[0], fin:s.dates[n-1], n, years, source:s.source, dailyR, dailyDates, court: years < 1 };
+  }
+  // corrélations sur dates communes
+  const keys = Object.keys(STATS); const CORR = {};
+  for (const a of keys){ CORR[a] = {}; const ma = new Map(); STATS[a].dailyDates.forEach((d,i)=>ma.set(d, STATS[a].dailyR[i]));
+    for (const b of keys){ if (a===b){CORR[a][b]=1;continue;} const xs=[],ys=[]; STATS[b].dailyDates.forEach((d,i)=>{ if (ma.has(d)){ xs.push(ma.get(d)); ys.push(STATS[b].dailyR[i]); } });
+      if (xs.length<30){CORR[a][b]=null;continue;} const mx=xs.reduce((p,q)=>p+q,0)/xs.length, my=ys.reduce((p,q)=>p+q,0)/ys.length; let sxy=0,sxx=0,syy=0; for(let i=0;i<xs.length;i++){sxy+=(xs[i]-mx)*(ys[i]-my);sxx+=(xs[i]-mx)**2;syy+=(ys[i]-my)**2;} CORR[a][b] = sxy/Math.sqrt(sxx*syy); } }
+  STATS.__corr = CORR;
+}
+computeStats();
+const PROXY = { HYPE:'panier altcoins (ETHFI)', SPYx:'SPY', QQQx:'QQQ', TBLLx:'BIL', GLDx:'GLD', eBTC:'BTC', weETH:'ETH', ETHFI:'—' };
+
+/* =====================================================================
+   MONTE CARLO
+   ===================================================================== */
+function randn(){ let u=0,v=0; while(u===0)u=Math.random(); while(v===0)v=Math.random(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+function randt4(){ // Student ν=4 normalisée à variance 1
+  const z = randn(); let c=0; for(let i=0;i<4;i++){const g=randn();c+=g*g;} return z/Math.sqrt(c/4)*Math.sqrt(2/4); }
+function cholesky(M){ const n=M.length, L=Array.from({length:n},()=>new Float64Array(n));
+  for (let i=0;i<n;i++) for (let j=0;j<=i;j++){ let s=M[i][j]; for(let k=0;k<j;k++) s-=L[i][k]*L[j][k]; if (i===j){ if (s<=1e-10) return null; L[i][i]=Math.sqrt(s);} else L[i][j]=s/L[j][j]; }
+  return L; }
+/* Paramètres μ/σ par actif (historique ou surcharge utilisateur) */
+function mcParams(list, overrides){
+  const rows = []; const seen = new Set();
+  const primary = {};
+  for (const a of list){ const h = a.histo; if (!h){ rows.push({key:a.key, histo:null, mu:0, sigma:0}); continue; }
+    if (seen.has(h)){ rows.push({key:a.key, histo:h, dup:primary[h], mu:0, sigma:0}); continue; } seen.add(h); primary[h]=a.key;
+    const st = STATS[h]; const o = overrides[h]||{}; rows.push({ key:a.key, histo:h, mu:o.mu!=null?o.mu:(st?st.mu:0), sigma:o.sigma!=null?o.sigma:(st?st.sigma:0), histMu:st?st.mu:null, histSigma:st?st.sigma:null }); }
+  if (!seen.has('ETHFI')){ const st=STATS.ETHFI; const o=overrides.ETHFI||{}; rows.push({ key:'__ETHFI', histo:'ETHFI', mu:o.mu!=null?o.mu:(st?st.mu:0), sigma:o.sigma!=null?o.sigma:(st?st.sigma:0), histMu:st?st.mu:null, histSigma:st?st.sigma:null }); }
+  else rows.push({ key:'__ETHFI', histo:'ETHFI', dup:primary.ETHFI, mu:0, sigma:0 });
+  return rows;
+}
+function monteCarlo(cfg, nPaths, fat, overrides, opts={}){
+  const list = assets().filter(a => a.ok && (cfg.alloc[a.key]||0) > 0);
+  const rows = mcParams(list, overrides||{});
+  const stoch = rows.filter(r=>r.histo && !r.dup); const dups = rows.filter(r=>r.dup); const m = stoch.length;
+  const M = stoch.map(a => stoch.map(b => { const c = (STATS.__corr[a.histo]||{})[b.histo]; return a===b?1:(c==null?0:c); }));
+  let L = cholesky(M); if (!L){ L = stoch.map((_,i)=>stoch.map((_,j)=>i===j?1:0)); }
+  const N = cfg.N; const dt = 1/12;
+  // yields variables (Earn) : moyenne = 90 j, dispersion = |7 j − 90 j|
+  const yInfo = list.map(a => { const k = a.yieldKey; if (!k) return null; const k90 = k+'_90j', k7 = k+'_7j'; if (isKnown(k90) && isKnown(k7)) return { mean:pnum(k90)/100, sd:Math.abs(pnum(k7)-pnum(k90))/100 }; return null; });
+  const gains=[], gainsAvec=[], collatFin=[], liq=[]; let nLiq=0, nRefus=0;
+  const keep = opts.series !== false; const collatSer = keep ? new Float32Array(nPaths*(N+1)) : null, detteSer = keep ? new Float32Array(nPaths*(N+1)) : null;
+  const eps = new Float64Array(m), z = new Float64Array(m);
+  const ethfiIdx = stoch.findIndex(r=>r.histo==='ETHFI');
+  for (let p=0;p<nPaths;p++){
+    const paths = {}; for (const r of rows) paths[r.key] = new Float64Array(N+1).fill(1);
+    const e7 = new Float64Array(N+1); paths.__ETHFI7 = e7;
+    for (let t=1;t<=N;t++){
+      for (let i=0;i<m;i++) eps[i] = fat ? randt4() : randn();
+      for (let i=0;i<m;i++){ let s=0; for (let k=0;k<=i;k++) s+=L[i][k]*eps[k]; z[i]=s; }
+      for (let i=0;i<m;i++){ const r = stoch[i]; const f = Math.exp((r.mu - r.sigma*r.sigma/2)*dt + r.sigma*Math.sqrt(dt)*z[i]); paths[r.key][t] = paths[r.key][t-1]*f; }
+      // les actifs partageant le même historique (ex. weETH et LiquidETH, ou ETHFI collatéral et ETHFI du cashback) suivent le même prix
+      for (const d of dups) paths[d.key][t] = paths[d.dup][t];
+      if (ethfiIdx>=0){ const r = stoch[ethfiIdx]; const e = fat?randt4():randn(); e7[t] = Math.exp((r.mu - r.sigma*r.sigma/2)*(7/365) + r.sigma*Math.sqrt(7/365)*e) - 1; }
+    }
+    let yields = null; if (yInfo.some(x=>x)){ yields = {}; list.forEach((a,i)=>{ if (yInfo[i]){ const arr = new Float64Array(N+1); for (let t=0;t<=N;t++) arr[t] = Math.max(0, yInfo[i].mean + yInfo[i].sd*randn()); yields[a.key]=arr; } }); }
+    const R = simulate(cfg, paths, yields).D;
+    gains.push(R.gainNetHors); gainsAvec.push(R.gainNetAvec); collatFin.push(R.collatFin); liq.push(R.moisLiq!==null); if (R.moisLiq!==null) nLiq++; if (R.refus>0) nRefus++;
+    if (keep){ for (let t=0;t<=N;t++){ collatSer[p*(N+1)+t] = R.serie.collat[t]; detteSer[p*(N+1)+t] = R.serie.dette[t]; } }
+  }
+  const q = (arr, p) => { const s = Float64Array.from(arr).sort(); const i = Math.min(s.length-1, Math.max(0, Math.round(p*(s.length-1)))); return s[i]; };
+  const mean = arr => arr.reduce((a,b)=>a+b,0)/arr.length; const sd = arr => { const m=mean(arr); return Math.sqrt(arr.reduce((a,b)=>a+(b-m)*(b-m),0)/(arr.length-1)); };
+  const bands = keep ? { collat:{}, dette:{} } : null;
+  if (keep){ const col = new Float32Array(nPaths); for (const key of ['collat','dette']){ const src = key==='collat'?collatSer:detteSer; for (const pc of [0.05,0.25,0.5,0.75,0.95]) bands[key][pc]=[]; for (let t=0;t<=N;t++){ for (let p=0;p<nPaths;p++) col[p]=src[p*(N+1)+t]; const s = Float32Array.from(col).sort(); for (const pc of [0.05,0.25,0.5,0.75,0.95]) bands[key][pc].push(s[Math.round(pc*(nPaths-1))]); } } }
+  return { n:nPaths, probaLiq:nLiq/nPaths, probaRefus:nRefus/nPaths, gains, gainsAvec, collatFin, liq, mean:mean(gains), sd:sd(gains), meanAvec:mean(gainsAvec), sdAvec:sd(gainsAvec), q:{p5:q(gains,.05),p25:q(gains,.25),p50:q(gains,.5),p75:q(gains,.75),p95:q(gains,.95)}, qAvec:{p5:q(gainsAvec,.05),p50:q(gainsAvec,.5),p95:q(gainsAvec,.95)}, collatMean:mean(collatFin), collatSd:sd(collatFin), bands, rows, corr:M, stoch };
+}
+</script>
+<script>
+/* =====================================================================
+   ÉTAT DE L'INTERFACE
+   ===================================================================== */
+const $ = id => document.getElementById(id);
+function defaultScenVals(name){ const sc = pv('scenarios')||{}; return clone(sc[name] || sc.Flat || {}); }
+function defaultAlloc(){ const al = {}; for (const a of assets()) al[a.key] = 0; if (al.EURC!==undefined) al.EURC = 100; return al; }
+function defaultState(){ return { D:pnum('depenses_mensuelles',1000), C:pnum('capital_collateral',10000), N:pnum('horizon_mois',36), freq:pnum('frequence_recharge',1), cbA:pnum('cashback_carte_actuelle',0), marge:pnum('marge_securite',20), tier:pv('cb_tier')||'Core', remb: (String(pv('remboursement_mode')||'100%').startsWith('100')?'100':(String(pv('remboursement_mode'))==='0'?'0':'X')), rembX:500, rembTout:0, dpMode:'auto', borrowCcy:'EURC', rEURC:pnum('taux_emprunt_eurc',3), rUSDC:pnum('taux_emprunt_usdc',3.7), alloc:defaultAlloc(), voie:'interne', cbStrat:pv('cb_strategie')||'vendre', cbCollat:false, cbDecote:pnum('cb_decote_conversion',0), cbExcl:pnum('cb_part_exclue',0), scen:'Flat', scenVals:defaultScenVals('Flat'), ddMois:18, ddDuree:pnum('mc_dd_duree',6), choc:pnum('choc_spread',-5), chocMois:pnum('choc_spread_mois',0), mcOverrides:{} }; }
+let state = defaultState();
+try { const s = JSON.parse(localStorage.getItem(LS_CFG)||'null'); if (s) state = Object.assign(defaultState(), s); } catch(e){}
+function saveState(){ try { localStorage.setItem(LS_CFG, JSON.stringify(state)); } catch(e){} }
+
+/* ----- liaison des contrôles ----- */
+const SCEN_CLASSES = [['eth_btc','ETH / BTC'],['indices','S&P / Nasdaq'],['or','Or'],['stables','Stablecoins'],['ethfi','ETHFI'],['hype','HYPE']];
+function bind(){
+  $('D').value = state.D; $('C').value = state.C; $('N').value = state.N; $('remb').value = state.remb; $('rembX').value = state.rembX; $('rembTout').value = state.rembTout; $('marge').value = state.marge; $('cbA').value = state.cbA; $('tier').value = state.tier;
+  $('dpMode').value = state.dpMode; $('borrowCcy').value = state.borrowCcy; $('rEURC').value = state.rEURC; $('rUSDC').value = state.rUSDC; $('voie').value = state.voie;
+  $('cbStrat').value = state.cbStrat; $('cbCollat').checked = state.cbCollat; $('cbDecote').value = state.cbDecote; $('cbExcl').value = state.cbExcl;
+  $('scen').value = state.scen; $('ddMois').value = state.ddMois; $('ddDuree').value = state.ddDuree; $('choc').value = state.choc; $('chocMois').value = state.chocMois;
+  $('rembXrow').style.display = state.remb==='X' ? 'flex' : 'none';
+  renderAlloc(); renderScenSliders(); labels();
+}
+function labels(){ $('v_D').textContent = fmtE(state.D); $('v_C').textContent = fmtE(state.C); $('v_ddMois').textContent = state.ddMois; $('v_ddDuree').textContent = state.ddDuree; $('v_choc').textContent = state.choc+' %'; $('v_chocMois').textContent = state.chocMois||'aucun'; }
+function renderAlloc(){
+  const box = $('alloc'); box.innerHTML = '';
+  for (const a of assets()){
+    const lab = document.createElement('div'); lab.innerHTML = a.ok ? a.label + (a.statut_seuil==='VÉRIFIÉ'&&a.statut_ltv!=='VÉRIFIÉ' ? ' <span class="tag" title="seuil lu on-chain / code source public, non documenté dans le help center : à confirmer">seuil on-chain</span>' : '') + (a.liquidite==='faible'?' <span class="tag">liquidité faible</span>':'') : '<span class="dis">'+a.label+'</span> <span class="tag">donnée manquante</span>';
+    const inp = document.createElement('input'); inp.type='number'; inp.min=0; inp.max=100; inp.step=5; inp.value = state.alloc[a.key]||0; inp.disabled = !a.ok; inp.style.width='70px';
+    inp.addEventListener('input', ()=>{ state.alloc[a.key] = +inp.value||0; sumAlloc(); recompute(); });
+    box.appendChild(lab); box.appendChild(inp);
+  }
+  sumAlloc();
+}
+function sumAlloc(){ const tot = assets().filter(a=>a.ok).reduce((s,a)=>s+(state.alloc[a.key]||0),0); $('allocSum').innerHTML = 'Total : <b>'+tot+' %</b>'+(tot!==100?' (les poids sont renormalisés à 100 %)':''); }
+function renderScenSliders(){
+  const box = $('scenSliders'); box.innerHTML = '';
+  const perso = state.scen==='Perso';
+  for (const [k,lab] of SCEN_CLASSES){ const v = state.scenVals[k] || {var:0,dd:0};
+    const d = document.createElement('div'); d.className='slider';
+    d.innerHTML = '<div class="lab"><span>'+lab+' : variation sur l\'horizon</span><b>'+v.var+' %</b></div><input type="range" min="-90" max="300" step="5" value="'+v.var+'" '+(perso?'':'disabled')+' data-k="'+k+'" data-f="var">'+
+                  '<div class="lab"><span>'+lab+' : drawdown max</span><b>'+v.dd+' %</b></div><input type="range" min="-95" max="0" step="5" value="'+v.dd+'" '+(perso?'':'disabled')+' data-k="'+k+'" data-f="dd">';
+    box.appendChild(d);
+  }
+  box.querySelectorAll('input[type=range]').forEach(inp => inp.addEventListener('input', ()=>{ const k=inp.dataset.k, f=inp.dataset.f; state.scenVals[k] = state.scenVals[k]||{var:0,dd:0}; state.scenVals[k][f] = +inp.value; inp.previousElementSibling.querySelector('b').textContent = inp.value+' %'; recompute(); }));
+}
+function wire(){
+  const on = (id, ev, fn) => $(id).addEventListener(ev, fn);
+  on('D','input',()=>{ state.D=+$('D').value; labels(); recompute(); });
+  on('C','input',()=>{ state.C=+$('C').value; labels(); recompute(); });
+  on('N','change',()=>{ state.N=+$('N').value; $('ddMois').max=state.N; $('chocMois').max=state.N; if (state.ddMois>state.N) state.ddMois=Math.round(state.N/2); $('ddMois').value=state.ddMois; labels(); recompute(); });
+  on('remb','change',()=>{ state.remb=$('remb').value; $('rembXrow').style.display = state.remb==='X'?'flex':'none'; recompute(); });
+  for (const id of ['rembX','rembTout','marge','cbA','rEURC','rUSDC','cbDecote','cbExcl']) on(id,'input',()=>{ state[id]=+$(id).value; recompute(); });
+  for (const id of ['tier','dpMode','borrowCcy','voie','cbStrat']) on(id,'change',()=>{ state[id]=$(id).value; recompute(); });
+  on('cbCollat','change',()=>{ state.cbCollat=$('cbCollat').checked; recompute(); });
+  on('scen','change',()=>{ state.scen=$('scen').value; if (state.scen!=='Perso') state.scenVals=defaultScenVals(state.scen); renderScenSliders(); recompute(); });
+  for (const id of ['ddMois','ddDuree','choc','chocMois']) on(id,'input',()=>{ state[id]=+$(id).value; labels(); recompute(); });
+  on('btnReset','click',()=>{ if (!confirm('Réinitialiser tous les paramètres et réponses aux valeurs vérifiées de septembre 2026 ?')) return; localStorage.removeItem(LS_KEY); localStorage.removeItem(LS_CFG); applyOverrides(); state = defaultState(); bind(); renderAll(); });
+  on('btnExport','click',exportCSV);
+  on('btnMC','click',runMC);
+  on('gridMode','change',renderGrid); on('gridMC','change',renderGrid);
+  on('btnUpdate','click',()=>openUpdate(0));
+  on('btnDlParams','click',downloadParams);
+  $('fileParams').addEventListener('change', importParams);
+  document.querySelectorAll('#nav button').forEach(b => b.addEventListener('click', ()=>{ document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('active',x===b)); document.querySelectorAll('section.tab').forEach(s=>s.classList.toggle('active', s.id==='tab-'+b.dataset.tab)); if (b.dataset.tab==='seuils') renderSeuils(); }));
+  $('modal').addEventListener('click', e=>{ if (e.target===$('modal')) $('modal').classList.remove('open'); });
+}
+
+/* =====================================================================
+   RENDU : résultats
+   ===================================================================== */
+let charts = {};
+function chart(id, cfg){ if (typeof Chart==='undefined'){ const c=$(id); if (c && !c.dataset.warned){ c.dataset.warned='1'; c.insertAdjacentHTML('afterend','<div class="warnbox">Chart.js (CDN) n\'a pas pu être chargé : graphiques désactivés, les tableaux restent valables. Vérifiez la connexion internet.</div>'); } return; } if (charts[id]) charts[id].destroy(); charts[id] = new Chart($(id).getContext('2d'), cfg); }
+const CSS = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+let lastRes = null, recomputeTimer = null;
+function recompute(){ saveState(); clearTimeout(recomputeTimer); recomputeTimer = setTimeout(()=>{ renderResults(); if ($('tab-seuils').classList.contains('active')) renderSeuils(); }, 60); }
+function counts(){ const c={CONFIRMÉ:0,VÉRIFIÉ:0,DÉFAUT:0,INCONNU:0}; for (const k in PARAMS){ c[PARAMS[k].statut]=(c[PARAMS[k].statut]||0)+1; } return c; }
+function footer(){ const c=counts(); return 'Calculé avec '+c['CONFIRMÉ']+' paramètres confirmés, '+c['VÉRIFIÉ']+' vérifiés (source publique), '+c['DÉFAUT']+' par défaut, '+c['INCONNU']+' inconnus.'; }
+function renderResults(){
+  const cfg = buildCfg(); const list = assets().filter(a=>a.ok && (cfg.alloc[a.key]||0)>0);
+  const paths = pricePathsScenario(cfg, list); const R = simulate(cfg, paths); lastRes = R;
+  // avertissements
+  const w = []; if (cfg.swapEthfiInconnu) w.push('Frais de swap ETHFI → EURC INCONNU : le cashback net est calculé sans frais de swap (optimiste).');
+  if (cfg.swapUsdcEurcInconnu && cfg.dpMode!=='auto') w.push('Frais de swap USDC ↔ EURC dans l\'app INCONNU : compté 0 là où une conversion est nécessaire.');
+  if (R.D.entreeInconnu) w.push('Coût d\'entrée du collatéral partiellement INCONNU (swap dans l\'app / DEX) : seules les parties connues sont comptées.');
+  if (list.length===0) w.push('Aucun actif de collatéral sélectionné (ou tous « donnée manquante ») : la route D est vide.');
+  for (const a of list) if (a.statut_seuil==='VÉRIFIÉ' && a.statut_ltv!=='VÉRIFIÉ') w.push(a.label+' : seuil de liquidation lu on-chain (Borrow Spoke Aave V4) et dans le code public d\'ether.fi, non documenté dans le help center ; LTV vu dans l\'app. À confirmer auprès du support avant de s\'y fier.');
+  const age = blocBAge(); if (age.length) w.push('Paramètres du bloc B datant de plus de 30 jours : '+age.join(', ')+' → à reconfirmer.');
+  $('warnParams').innerHTML = w.map(x=>'<div class="warnbox">'+x+'</div>').join('');
+  // tableau
+  const rows = [R.A,R.B1,R.B2,R.C,R.D];
+  let h = '<tr><th>Route</th><th class="num">Frais totaux</th><th class="num">Intérêts payés</th><th class="num">Cashback nominal</th><th class="num">Cashback net réalisé</th><th class="num">Yield du collatéral</th><th class="num">± value latente</th><th class="num">Pertes de liquidation</th><th class="num"><b>Gain net vs A (hors prix)</b></th><th class="num">Gain net vs A (avec prix)</th><th>Note</th></tr>';
+  for (const r of rows){ const g = r.gainNetHors; h += '<tr><td><b>'+r.nom+'</b></td><td class="num">'+fmtE(r.frais)+'</td><td class="num">'+fmtE(r.interets)+'</td><td class="num">'+fmtE(r.cashbackNom)+(r.ethfiUnits&&cfg.cbStrat==='conserver'?'<br><small>'+fmtN(r.ethfiUnits,1)+' ETHFI</small>':'')+'</td><td class="num">'+fmtE(r.cashbackNet)+'</td><td class="num">'+fmtE(r.yieldCollat)+'</td><td class="num">'+fmtE(r.pv)+'</td><td class="num">'+fmtE(r.perteLiq)+'</td><td class="num" style="color:'+(g>=0?CSS('--ok'):CSS('--bad'))+'"><b>'+fmtE(g)+'</b></td><td class="num">'+fmtE(r.gainNetAvec)+'</td><td class="muted">'+(r.note||'')+'</td></tr>'; }
+  $('tblRoutes').innerHTML = h;
+  // verdicts
+  const best = rows.slice(1).reduce((b,r)=>r.gainNetHors>b.gainNetHors?r:b, rows[1]);
+  let v = '<div class="verdict"><b>Scénario '+state.scen+' sur '+cfg.N+' mois, '+fmtE(cfg.D)+'/mois :</b> ';
+  if (best.gainNetHors<=0) v += 'aucune route ne bat la carte bancaire classique (cashback actuel '+fmtP(cfg.cbA,1)+').';
+  else v += 'la meilleure route est <b>'+best.nom+'</b> avec '+fmtE(best.gainNetHors)+' de gain net hors variation de prix ('+fmtE(best.gainNetHors/cfg.N)+'/mois).';
+  if (R.D.moisLiq!==null) v += ' <span style="color:'+CSS('--bad')+'">Route D : liquidation au mois '+R.D.moisLiq+'.</span>';
+  if (R.D.refus>0) v += ' <span style="color:'+CSS('--warn')+'">Route D : dépense refusée '+R.D.refus+' mois (LTV max atteint dès le mois '+R.D.premierRefus+').</span>';
+  v += '</div>';
+  const cbMois = R.cb.nominal, intMois = cfg.D*(cfg.borrowCcy==='EURC'?cfg.rEURC:cfg.rUSDC)/12;
+  v += '<div class="okbox">Question centrale — le cashback ('+fmtE(cbMois,2)+'/mois au tier '+cfg.tier+', taux moyen '+fmtP(R.cb.tauxMoyen,2)+') couvre-t-il les intérêts ? En mode revolving (dette ≈ 1 mois), les intérêts du mois sont ≈ '+fmtE(intMois,2)+' → '+(cbMois>intMois?'oui, largement':'non')+'. Sans remboursement, la dette cumulée fait grimper les intérêts chaque mois : voir l\'onglet Seuils.</div>';
+  $('verdicts').innerHTML = v; $('footRoutes').textContent = footer();
+  // KPI
+  const D = R.D; const sSer = D.serie;
+  $('kpiD').innerHTML = ['<div><small>Première liquidation</small><b>'+(D.moisLiq===null?'aucune':'mois '+D.moisLiq)+'</b></div>',
+    '<div><small>Baisse de prix supportable avant liquidation</small><b>'+(D.baisseMax===null?'—':fmtP(Math.max(0,D.baisseMax),0))+'</b><small>au pic de dette ('+fmtE(D.detteMax)+')</small></div>',
+    '<div><small>Dette en fin d\'horizon</small><b>'+fmtE(D.dette)+'</b></div>',
+    '<div><small>Collatéral en fin d\'horizon</small><b>'+fmtE(D.collatFin)+'</b><small>mis : '+fmtE(cfg.C)+'</small></div>',
+    '<div><small>Intérêts payés</small><b>'+fmtE(D.interets)+'</b></div>',
+    '<div><small>Mois avec dépense refusée</small><b>'+D.refus+'</b></div>'].join('');
+  $('cbDetail').innerHTML = '<table><tr><th></th><th class="num">Nominal (cumul)</th><th class="num">Net réalisé (cumul)</th><th>Stratégie</th></tr><tr><td>Direct Pay (B/C)</td><td class="num">'+fmtE(R.B1.cashbackNom)+'</td><td class="num">'+fmtE(R.B1.cashbackNet)+'</td><td>'+(cfg.cbStrat==='vendre'?'vendre au claim : nominal × (1 + variation ETHFI 7 j) × (1 − décote) × (1 − frais de swap'+(cfg.swapEthfiInconnu?' INCONNU':'')+')':'conserver : '+fmtN(R.B1.ethfiUnits,1)+' ETHFI accumulés, valorisés au prix ETHFI de fin de scénario')+'</td></tr><tr><td>Borrow (D)</td><td class="num">'+fmtE(D.cashbackNom)+'</td><td class="num">'+fmtE(D.cashbackNet)+'</td><td class="muted">réduit si des dépenses ont été refusées</td></tr></table>';
+  // graphiques
+  const lbl = Array.from({length:cfg.N+1},(_,i)=>i);
+  chart('chLTV', { type:'line', data:{ labels:lbl, datasets:[ {label:'LTV courant', data:sSer.ltv.map(x=>Math.min(x,1.5)*100), borderColor:CSS('--acc'), tension:.2, pointRadius:sSer.liq.map(x=>x?5:0), pointBackgroundColor:CSS('--bad')}, {label:'Seuil de liquidation', data:sSer.seuil.map(x=>x*100), borderColor:CSS('--bad'), borderDash:[6,4], pointRadius:0}, {label:'LTV max (refus de dépense)', data:sSer.ltvMax.map(x=>x*100), borderColor:CSS('--warn'), borderDash:[2,3], pointRadius:0} ] }, options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ title:{display:true,text:'%'}, min:0 }, x:{ title:{display:true,text:'mois'} } }, plugins:{ legend:{position:'bottom'} } } });
+  chart('chDette', { type:'line', data:{ labels:lbl, datasets:[ {label:'Dette', data:sSer.dette, borderColor:CSS('--bad'), fill:false, tension:.2, pointRadius:0}, {label:'Valeur du collatéral (prix ether.fi)', data:sSer.collat, borderColor:CSS('--ok'), tension:.2, pointRadius:0} ] }, options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ title:{display:true,text:'€'} }, x:{ title:{display:true,text:'mois'} } }, plugins:{ legend:{position:'bottom'} } } });
+}
+function blocBAge(){ const out=[]; const now = new Date(); for (const k in PARAMS){ const p=PARAMS[k]; if (p.bloc!=='B' || p.statut==='INCONNU') continue; const d = new Date(p.date); if ((now-d)/864e5 > 30) out.push(p.libelle); } return out; }
+
+/* =====================================================================
+   RENDU : seuils (Sens 1–4), grille, point mort
+   ===================================================================== */
+function ltvPondere(cfg){ const list = assets().filter(a=>a.ok && (cfg.alloc[a.key]||0)>0); const tot = list.reduce((s,a)=>s+cfg.alloc[a.key],0); if (!tot) return {ltv:0,seuil:0}; let l=0,s=0; for (const a of list){ l+=a.ltv*cfg.alloc[a.key]/tot; s+=a.seuil*cfg.alloc[a.key]/tot; } return {ltv:l, seuil:s}; }
+function critereOK(R, cfg){ // aucune liquidation, aucun refus, LTV max ≤ LTV × (1 − marge)
+  const lim = ltvPondere(cfg).ltv*(1-cfg.marge); let mx=0; for (const x of R.D.serie.ltvIntra) mx=Math.max(mx,x); return R.D.moisLiq===null && R.D.refus===0 && mx <= lim+1e-9; }
+function runWith(over, scenName){ const cfg = buildCfg(over); if (scenName){ cfg.scen=scenName; cfg.scenVals = scenName==='Perso'?state.scenVals:defaultScenVals(scenName); } const list = assets().filter(a=>a.ok && (cfg.alloc[a.key]||0)>0); return { R: simulate(cfg, pricePathsScenario(cfg, list)), cfg }; }
+function capitalMin(over, scenName){ // recherche dichotomique du capital minimal respectant le critère
+  let lo=0, hi=200000; const test = C => { const {R,cfg} = runWith(Object.assign({C},over), scenName); return critereOK(R,cfg); }; if (!test(hi)) return null; for (let i=0;i<30;i++){ const mid=(lo+hi)/2; if (test(mid)) hi=mid; else lo=mid; } return hi; }
+function depenseMax(over, scenName){ let lo=0, hi=20000; const test = D => { const {R,cfg} = runWith(Object.assign({D},over), scenName); return critereOK(R,cfg); }; if (!test(1)) return 0; for (let i=0;i<30;i++){ const mid=(lo+hi)/2; if (test(mid)) lo=mid; else hi=mid; } return lo; }
+function renderSeuils(){
+  const cfg = buildCfg(); const lp = ltvPondere(cfg); const S = cfg.marge;
+  // Sens 1
+  const revolving = lp.ltv>0 ? cfg.D/(lp.ltv*(1-S)) : null;
+  let h = '<p>Répartition actuelle : LTV pondéré <b>'+fmtP(lp.ltv,0)+'</b>, seuil pondéré <b>'+fmtP(lp.seuil,0)+'</b>, marge de sécurité '+fmtP(S,0)+'.</p>';
+  h += '<table><tr><th>Mode</th><th class="num">Capital minimum</th><th>Formule / critère</th></tr>';
+  h += '<tr><td>Borrow avec remboursement mensuel (dette max = 1 mois)</td><td class="num"><b>'+fmtE(revolving)+'</b></td><td class="muted">D ÷ (LTV pondéré × (1 − marge)) = '+fmtE(cfg.D)+' ÷ ('+fmtN(lp.ltv,2)+' × '+fmtN(1-S,2)+')</td></tr>';
+  for (const n of [6,12,24,36,48]){ const cm = capitalMin({N:n, remb:'0', rembTout:0}, state.scen); h += '<tr><td>Borrow sans remboursement sur '+n+' mois (scénario '+state.scen+', drawdown inclus)</td><td class="num"><b>'+(cm===null?'> 200 000 €':fmtE(cm))+'</b></td><td class="muted">dette cumulée (D × N + intérêts) ≤ LTV pondéré × (1 − marge) × valeur du collatéral, y compris au creux du drawdown</td></tr>'; }
+  h += '<tr><td>Direct Pay (pas de collatéral)</td><td class="num"><b>0 €</b></td><td class="muted">+ frais de recharge : '+fmtE(cfg.D*cfg.fSepaEurc,2)+'/mois en EURC (0,20 %)</td></tr></table>';
+  $('sens1').innerHTML = h;
+  // Sens 2
+  h = '<table><tr><th>Scénario</th><th class="num">Dépense max / mois avec remboursement 100 %</th><th class="num">Dépense max / mois sans remboursement ('+cfg.N+' mois)</th><th class="num">Si je dépense '+fmtE(cfg.D)+' sans rembourser : liquidation au mois</th></tr>';
+  for (const sc of ['Bear','Flat','Bull']){ const d1 = depenseMax({remb:'100'}, sc), d0 = depenseMax({remb:'0', rembTout:0}, sc); const {R} = runWith({remb:'0', rembTout:0}, sc); h += '<tr><td>'+sc+'</td><td class="num">'+fmtE(d1)+'</td><td class="num">'+fmtE(d0)+'</td><td class="num">'+(R.D.moisLiq===null?(R.D.refus>0?'dépense refusée dès le mois '+R.D.premierRefus:'aucune'):R.D.moisLiq)+'</td></tr>'; }
+  h += '</table><p class="muted">Capital : '+fmtE(cfg.C)+'. Critère : aucune liquidation, aucune dépense refusée, LTV maximal ≤ LTV pondéré × (1 − marge).</p>';
+  $('sens2').innerHTML = h;
+  renderGrid();
+  // Sens 4
+  const rates = [0.015,0.02,0.03,0.04]; const solve = (r, N) => { for (let d=10; d<=30000; d+=10){ const cb = cashbackMois(d, cfg).nominal; const it = N? d*N*r/12 : d*r/12; if (it>cb) return d; } return null; };
+  h = '<table><tr><th>Taux d\'emprunt</th><th class="num">Dépense mensuelle où intérêts du mois > cashback du mois (revolving)</th><th class="num">… si dette cumulée de 12 mois</th><th class="num">… si dette cumulée de 24 mois</th></tr>';
+  for (const r of rates) h += '<tr><td>'+fmtP(r,1)+'</td><td class="num">'+fmtE(solve(r,0))+'</td><td class="num">'+fmtE(solve(r,12))+'</td><td class="num">'+fmtE(solve(r,24))+'</td></tr>';
+  const caps = tierCaps(cfg.tier);
+  h += '</table><p>Dépense « optimale » (cashback marginal encore à '+fmtP(cfg.cb1,0)+') : <b>'+fmtE(caps.p1/cfg.eurusd)+'/mois</b> ('+caps.p1+' $ au taux '+cfg.eurusd+'). Au-delà, chaque euro ne rapporte plus que '+fmtP(cfg.cb2,0)+' puis '+fmtP(cfg.cb3,1)+', alors que les intérêts restent proportionnels à la dette.</p>';
+  $('sens4').innerHTML = h;
+  // point mort Bear
+  const pm = capitalMin({N:48, D:1000}, 'Bear'); const pmN = capitalMin({}, 'Bear');
+  $('pointMort').innerHTML = '<div class="kpi"><div><small>Collatéral minimal pour 48 mois à 1 000 €/mois, scénario Bear, mode de remboursement actuel ('+(state.remb==='100'?'100 %':state.remb==='0'?'aucun':state.rembX+' €/mois')+')</small><b>'+(pm===null?'> 200 000 €':fmtE(pm))+'</b></div><div><small>Même chose avec mes réglages ('+fmtE(cfg.D)+'/mois, '+cfg.N+' mois)</small><b>'+(pmN===null?'> 200 000 €':fmtE(pmN))+'</b></div></div><p class="muted">Répartition de collatéral et marge de sécurité actuelles. Critère : aucune liquidation, aucune dépense refusée, LTV ≤ LTV pondéré × (1 − marge) même au creux du drawdown Bear.</p>';
+}
+function renderGrid(){
+  const cfg = buildCfg(); const mode = $('gridMode').value; const useMC = $('gridMC').checked;
+  const Ds = []; for (let d=500; d<=3000; d+=250) Ds.push(d); const Cs = [1000,2000,3000,5000,7500,10000,15000,20000,30000];
+  const cells = {}; let h = '<tr><th>Dépenses \\ Capital</th>'+Cs.map(c=>'<th class="num">'+fmtE(c)+'</th>').join('')+'</tr>';
+  for (const d of Ds){ h += '<tr><th>'+fmtE(d)+'/mois</th>';
+    for (const c of Cs){ const {R} = runWith({D:d, C:c}, state.scen); const {R:Rb} = runWith({D:d, C:c}, 'Bear'); const g = mode==='avec'?R.D.gainNetAvec:R.D.gainNetHors;
+      let cls, tip; let pliq = null;
+      if (useMC){ const mc = monteCarlo(buildCfg({D:d, C:c}), 500, $('mcFat').checked, state.mcOverrides, {series:false}); pliq = mc.probaLiq; }
+      if (R.D.premierRefus===1) { cls='g'; tip='capital insuffisant pour couvrir la dépense (LTV max)'; }
+      else if (useMC){ const th = pv('mc_seuils_couleur')||{vert_max:5,orange_max:20}; cls = (g<=0||pliq*100>th.orange_max)?'r':(pliq*100>th.vert_max?'o':'v'); tip='proba de liquidation MC '+fmtP(pliq,1); }
+      else if (g<=0 || R.D.moisLiq!==null) { cls='r'; tip = R.D.moisLiq!==null?'liquidation au mois '+R.D.moisLiq:'perte nette'; }
+      else if (Rb.D.moisLiq!==null) { cls='o'; tip='gain positif mais liquidation en Bear au mois '+Rb.D.moisLiq; }
+      else { cls='v'; tip='gain positif, aucune liquidation'; }
+      const key = d+'_'+c; cells[key] = { g, tip, moisLiq:R.D.moisLiq, cb:R.D.cashbackNet, it:R.D.interets, refus:R.D.refus, pliq };
+      h += '<td class="'+cls+'" data-k="'+key+'">'+(cls==='g'?'—':fmtE(g))+(pliq!==null?'<br><small>'+fmtP(pliq,0)+'</small>':'')+'</td>'; }
+    h += '</tr>'; }
+  $('grid').innerHTML = h; $('footGrid').textContent = 'Scénario '+state.scen+', '+cfg.N+' mois, remboursement : '+(state.remb==='100'?'100 %':state.remb==='0'?'aucun':state.rembX+' €/mois')+'. '+footer();
+  const tip = $('tooltip');
+  $('grid').querySelectorAll('td[data-k]').forEach(td => { td.addEventListener('mousemove', e=>{ const c = cells[td.dataset.k]; tip.style.display='block'; tip.style.left=(e.clientX+12)+'px'; tip.style.top=(e.clientY+12)+'px'; tip.innerHTML = '<b>'+c.tip+'</b><br>gain net : '+fmtE(c.g)+'<br>liquidation : '+(c.moisLiq===null?'aucune':'mois '+c.moisLiq)+'<br>cashback net : '+fmtE(c.cb)+'<br>intérêts : '+fmtE(c.it)+(c.refus?'<br>dépenses refusées : '+c.refus+' mois':''); }); td.addEventListener('mouseleave', ()=>tip.style.display='none'); });
+}
+
+/* =====================================================================
+   RENDU : Monte Carlo
+   ===================================================================== */
+function renderMcOverrides(){
+  const cfg = buildCfg(); const list = assets().filter(a=>a.ok && (cfg.alloc[a.key]||0)>0); const rows = mcParams(list, state.mcOverrides).filter(r=>r.histo && !r.dup);
+  let h = '<table><tr><th>Actif (série historique)</th><th class="num">μ historique</th><th class="num">σ historique</th><th class="num">μ retenu (%/an)</th><th class="num">σ retenu (%/an)</th><th>Écart</th></tr>';
+  for (const r of rows){ const o = state.mcOverrides[r.histo]||{}; h += '<tr><td>'+(r.key==='__ETHFI'?'ETHFI (cashback)':r.key)+' <span class="tag">'+r.histo+'</span>'+(STATS[r.histo]&&STATS[r.histo].court?' <span class="pill DEFAUT">historique &lt; 1 an</span>':'')+'</td><td class="num">'+fmtP(r.histMu,1)+'</td><td class="num">'+fmtP(r.histSigma,1)+'</td><td class="num"><input type="number" step="1" data-h="'+r.histo+'" data-f="mu" value="'+(o.mu!=null?Math.round(o.mu*100):'')+'" placeholder="'+Math.round((r.histMu||0)*100)+'"></td><td class="num"><input type="number" step="1" min="0" data-h="'+r.histo+'" data-f="sigma" value="'+(o.sigma!=null?Math.round(o.sigma*100):'')+'" placeholder="'+Math.round((r.histSigma||0)*100)+'"></td><td class="muted">'+(o.mu!=null?'μ '+fmtP(o.mu-r.histMu,1)+' vs historique':'')+' '+(o.sigma!=null?'σ '+fmtP(o.sigma-r.histSigma,1):'')+'</td></tr>'; }
+  h += '</table><p class="muted">Laissez vide pour utiliser l\'historique. Exemple : « je crois à ETH +30 %/an » → saisir 30 dans μ retenu.</p>';
+  $('mcOverrides').innerHTML = h;
+  $('mcOverrides').querySelectorAll('input').forEach(inp => inp.addEventListener('change', ()=>{ const hk=inp.dataset.h, f=inp.dataset.f; state.mcOverrides[hk]=state.mcOverrides[hk]||{}; if (inp.value==='') delete state.mcOverrides[hk][f]; else state.mcOverrides[hk][f]=+inp.value/100; saveState(); renderMcOverrides(); }));
+}
+function runMC(){
+  $('mcStatus').textContent = 'calcul en cours…'; setTimeout(()=>{
+    const cfg = buildCfg(); const n = +$('mcN').value; const fat = $('mcFat').checked; const t0 = performance.now();
+    const mc = monteCarlo(cfg, n, fat, state.mcOverrides);
+    $('mcStatus').textContent = n+' trajectoires en '+Math.round(performance.now()-t0)+' ms'; $('mcOut').style.display='block';
+    $('mcKpi').innerHTML = ['<div><small>Probabilité de liquidation sur '+cfg.N+' mois</small><b style="color:'+(mc.probaLiq<0.05?CSS('--ok'):mc.probaLiq<0.2?CSS('--warn'):CSS('--bad'))+'">'+fmtP(mc.probaLiq,1)+'</b></div>',
+      '<div><small>Espérance du gain net vs carte bancaire (hors prix)</small><b>'+fmtE(mc.mean)+'</b><small>écart-type '+fmtE(mc.sd)+'</small></div>',
+      '<div><small>Espérance du gain net (avec ± value)</small><b>'+fmtE(mc.meanAvec)+'</b><small>écart-type '+fmtE(mc.sdAvec)+'</small></div>',
+      '<div><small>Valeur finale du collatéral</small><b>'+fmtE(mc.collatMean)+'</b><small>écart-type '+fmtE(mc.collatSd)+'</small></div>',
+      '<div><small>Trajectoires avec dépense refusée</small><b>'+fmtP(mc.probaRefus,1)+'</b></div>'].join('');
+    $('mcDist').innerHTML = '<table><tr><th></th><th class="num">P5</th><th class="num">P25</th><th class="num">Médiane</th><th class="num">P75</th><th class="num">P95</th></tr><tr><td>Gain net vs A, hors prix</td><td class="num">'+fmtE(mc.q.p5)+'</td><td class="num">'+fmtE(mc.q.p25)+'</td><td class="num">'+fmtE(mc.q.p50)+'</td><td class="num">'+fmtE(mc.q.p75)+'</td><td class="num">'+fmtE(mc.q.p95)+'</td></tr><tr><td>Gain net vs A, avec ± value latente</td><td class="num">'+fmtE(mc.qAvec.p5)+'</td><td class="num">—</td><td class="num">'+fmtE(mc.qAvec.p50)+'</td><td class="num">—</td><td class="num">'+fmtE(mc.qAvec.p95)+'</td></tr></table><p class="muted">Lecture : '+(mc.qAvec.p5<0?'dans 5 % des cas je perds plus de '+fmtE(-mc.qAvec.p5):'même dans les 5 % de cas les pires, je gagne encore au moins '+fmtE(mc.qAvec.p5))+' (avec prix) ; dans 5 % des cas je gagne plus de '+fmtE(mc.qAvec.p95)+'.</p>';
+    const lbl = Array.from({length:cfg.N+1},(_,i)=>i); const b = mc.bands; const lpond = ltvPondere(cfg);
+    chart('chFan', { type:'line', data:{ labels:lbl, datasets:[
+      {label:'Collatéral P95', data:b.collat[0.95], borderColor:'rgba(47,158,68,.3)', backgroundColor:'rgba(47,158,68,.12)', fill:'+1', pointRadius:0}, {label:'Collatéral P75', data:b.collat[0.75], borderColor:'rgba(47,158,68,.5)', backgroundColor:'rgba(47,158,68,.25)', fill:'+1', pointRadius:0}, {label:'Collatéral médiane', data:b.collat[0.5], borderColor:CSS('--ok'), pointRadius:0}, {label:'Collatéral P25', data:b.collat[0.25], borderColor:'rgba(47,158,68,.5)', backgroundColor:'rgba(47,158,68,.25)', fill:'-1', pointRadius:0}, {label:'Collatéral P5', data:b.collat[0.05], borderColor:'rgba(47,158,68,.3)', backgroundColor:'rgba(47,158,68,.12)', fill:'-1', pointRadius:0},
+      {label:'Dette médiane', data:b.dette[0.5], borderColor:CSS('--bad'), pointRadius:0}, {label:'Dette P95', data:b.dette[0.95], borderColor:'rgba(201,42,42,.4)', borderDash:[4,3], pointRadius:0},
+      {label:'Seuil de liquidation × collatéral médian', data:b.collat[0.5].map(x=>x*lpond.seuil), borderColor:CSS('--warn'), borderDash:[6,4], pointRadius:0} ] }, options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ title:{display:true,text:'€'} }, x:{ title:{display:true,text:'mois'} } }, plugins:{ legend:{position:'bottom', labels:{boxWidth:10}} } } });
+    const g = mc.gainsAvec; const mn = Math.min(...g), mx = Math.max(...g); const nb = 40; const w = (mx-mn)/nb || 1; const bins = new Array(nb).fill(0); for (const x of g) bins[Math.min(nb-1, Math.floor((x-mn)/w))]++;
+    chart('chHist', { type:'bar', data:{ labels:bins.map((_,i)=>fmtE(mn+i*w)), datasets:[{label:'trajectoires', data:bins, backgroundColor:bins.map((_,i)=> (mn+(i+0.5)*w)<0 ? 'rgba(201,42,42,.6)':'rgba(47,158,68,.6)')}] }, options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{ ticks:{maxTicksLimit:8} } }, plugins:{ legend:{display:false} } } });
+    // scénarios fixes → percentile
+    const sorted = Float64Array.from(g).sort(); const pct = x => { let i=0; while(i<sorted.length && sorted[i]<x) i++; return i/sorted.length; };
+    let h = '<table><tr><th>Scénario fixe</th><th class="num">Gain net (avec prix)</th><th class="num">Percentile dans la simulation</th><th>Lecture</th></tr>';
+    for (const sc of ['Bear','Flat','Bull']){ const {R} = runWith({}, sc); const p = pct(R.D.gainNetAvec); h += '<tr><td>'+sc+'</td><td class="num">'+fmtE(R.D.gainNetAvec)+'</td><td class="num">P'+Math.round(p*100)+'</td><td class="muted">'+(sc==='Bear'?(p<0.1?'vraiment pessimiste':'pas si pessimiste : '+Math.round(p*100)+' % des trajectoires font pire'):sc==='Bull'?(p>0.9?'vraiment optimiste':Math.round((1-p)*100)+' % des trajectoires font mieux'):'')+'</td></tr>'; }
+    $('mcScen').innerHTML = h+'</table>';
+    // comparaison par actif
+    const cands = ['EURC','LiquidEUR','USDC','LiquidUSD','weETH','eBTC','SPYx','QQQx','PAXG'].filter(k=>assets().some(a=>a.key===k&&a.ok));
+    h = '<table><tr><th>Collatéral</th><th class="num">Espérance gain net (avec prix)</th><th class="num">Écart-type</th><th class="num">Proba liquidation</th><th class="num">Espérance ÷ écart-type</th><th class="num">Espérance hors prix</th></tr>';
+    const runOne = (alloc, nom) => { const m = monteCarlo(buildCfg({alloc}), Math.min(n,2000), fat, state.mcOverrides, {series:false}); h += '<tr><td>'+nom+'</td><td class="num">'+fmtE(m.meanAvec)+'</td><td class="num">'+fmtE(m.sdAvec)+'</td><td class="num">'+fmtP(m.probaLiq,1)+'</td><td class="num">'+(m.sdAvec>0?fmtN(m.meanAvec/m.sdAvec,2):'—')+'</td><td class="num">'+fmtE(m.mean)+'</td></tr>'; };
+    for (const k of cands){ const al = {}; al[k]=100; runOne(al, '100 % '+k); }
+    runOne(cfg.alloc, 'Mix actuel'); $('mcAssets').innerHTML = h+'</table><p class="muted">2 000 trajectoires par ligne. Les stablecoins ont σ = 0 : leur risque de liquidation vient uniquement de la dette cumulée.</p>';
+    $('footMC').textContent = footer()+' Queues épaisses : '+(fat?'oui (Student ν = 4)':'non (normale)')+'.';
+  }, 30);
+}
+
+/* =====================================================================
+   RENDU : statistiques historiques
+   ===================================================================== */
+function renderStats(){
+  const keys = Object.keys(STATS).filter(k=>k!=='__corr'); const meta = RAW.prix_meta||{};
+  let h = '<tr><th>Actif</th><th>Période (source)</th><th class="num">μ /an</th><th class="num">σ /an</th><th class="num">σ²</th><th class="num">Drawdown max</th><th class="num">Pire mois</th><th class="num">Pire trimestre</th><th>Proxy</th></tr>';
+  for (const k of keys){ const s = STATS[k]; h += '<tr'+(s.court?' style="color:'+CSS('--warn')+'"':'')+'><td><b>'+k+'</b></td><td class="muted">'+s.debut+' → '+s.fin+' ('+s.source+', '+s.n+' pts'+(s.court?', < 1 an':'')+')</td><td class="num">'+fmtP(s.mu,1)+'</td><td class="num">'+fmtP(s.sigma,1)+'</td><td class="num">'+fmtN(s.variance,3)+'</td><td class="num">'+fmtP(s.mdd,1)+'<br><small>'+s.mddDate+'</small></td><td class="num">'+fmtP(s.worstM,1)+'<br><small>'+s.worstMk+'</small></td><td class="num">'+fmtP(s.worstQ,1)+'<br><small>'+s.worstQk+'</small></td><td class="muted">'+(s.court||['SPYx','QQQx','TBLLx','GLDx','eBTC','weETH'].includes(k)?(PROXY[k]||'—')+(s.court?' (à confirmer)':' utilisé pour les stats longues'):'—')+'</td></tr>'; }
+  $('tblStats').innerHTML = h;
+  const ck = ['BTC','ETH','ETHFI','HYPE','PAXG','GLD','SPY','QQQ','BIL'].filter(k=>STATS[k]); const C = STATS.__corr;
+  h = '<tr><th></th>'+ck.map(k=>'<th class="num">'+k+'</th>').join('')+'</tr>';
+  for (const a of ck){ h += '<tr><th>'+a+'</th>'+ck.map(b=>{ const c=C[a][b]; const col = c==null?'':'rgba('+(c>0?'201,42,42':'25,113,194')+','+Math.abs(c)*0.6+')'; return '<td class="num" style="background:'+col+'">'+(c==null?'—':fmtN(c,2))+'</td>'; }).join('')+'</tr>'; }
+  $('tblCorr').innerHTML = h;
+}
+
+/* =====================================================================
+   RENDU : panneau Données + interrogatoire
+   ===================================================================== */
+const BLOCS = { A:'Bloc A — Mon usage', B:'Bloc B — Taux d\'emprunt et rendements', C:'Bloc C — Frais', D:'Bloc D — Collatéral (LTV / seuil / bonus)', Dbis:'Bloc D bis — Spreads de valorisation', Dter:'Bloc D ter — Voies d\'acquisition', E:'Bloc E — Cashback', F:'Bloc F — Scénarios' };
+function valStr(v){ if (v===null||v===undefined) return '<span class="muted">—</span>'; if (typeof v==='object') return '<small>'+Object.entries(v).map(([k,x])=>k+' : '+(x===null?'?':(typeof x==='object'?JSON.stringify(x):x))).join(' · ')+'</small>'; return String(v); }
+function renderData(){
+  let h = ''; const now = new Date();
+  for (const b in BLOCS){ h += '<tr><th colspan="7" style="background:var(--bg)">'+BLOCS[b]+'</th></tr>';
+    for (const k in PARAMS){ const p = PARAMS[k]; if (p.bloc!==b) continue; const old = p.bloc==='B' && (now-new Date(p.date))/864e5>30;
+      h += '<tr><td><b>'+p.libelle+'</b><br><small class="muted">'+k+'</small></td><td>'+valStr(p.valeur)+' <small class="muted">'+(p.unite||'')+'</small></td><td><span class="pill '+statutClass(p.statut)+'">'+p.statut+'</span>'+(String(p.source||'').toLowerCase().includes('support')?' <span class="pill SUPPORT" title="réponse du support : engage moins qu\'une documentation">💬</span>':'')+'</td><td class="muted">'+(p.source||'')+'</td><td'+(old?' style="color:var(--warn)"':'')+'>'+(p.date||'')+(old?' ⚠':'')+'</td><td class="muted">'+(p.ou_trouver||'')+'</td><td class="muted"><small>'+(p.note||'')+'</small></td></tr>'; } }
+  $('tblParams').innerHTML = '<tr><th>Paramètre</th><th>Valeur</th><th>Statut</th><th>Source</th><th>Date</th><th>Où trouver</th><th>Note</th></tr>'+h;
+  const age = blocBAge(); $('dataWarn').innerHTML = (age.length?'<div class="warnbox">Bloc B : '+age.length+' paramètre(s) de plus de 30 jours → à reconfirmer à chaque session : '+age.join(', ')+'</div>':'') + '<div class="muted">'+footer()+'</div>';
+  // spreads
+  let s = '<table><tr><th>Actif</th><th>Spread relevé (prix ether.fi vs marché)</th><th>Référence publique (Claude Code)</th><th>Statut</th><th>Date</th></tr>';
+  for (const k in PARAMS){ if (!k.startsWith('spread_')) continue; const p = PARAMS[k]; const v = p.valeur; const lim = /SPYx|QQQx|TBLLx|PAXG/.test(k)?5:2; const alert = v!=null && Math.abs(v)>lim;
+    s += '<tr><td>'+p.libelle.replace('Spread de valorisation ','')+'</td><td'+(alert?' style="color:var(--bad);font-weight:600"':'')+'>'+(v==null?'à relever':fmtN(v,2)+' %'+(alert?' ⚠ > '+lim+' %':''))+'</td><td class="muted"><small>'+(p.reference_publique?Object.entries(p.reference_publique).map(([a,b])=>a+' '+b).join(' · '):'')+'<br>'+(p.note||'')+'</small></td><td><span class="pill '+statutClass(p.statut)+'">'+p.statut+'</span></td><td>'+p.date+'</td></tr>'; }
+  $('tblSpreads').innerHTML = s+'</table><p class="muted">Le moteur applique LTV et seuil au prix ether.fi. Statut CONFIRMÉ uniquement si les deux prix ont été relevés à moins d\'une heure d\'écart. Alerte rouge si le spread dépasse 2 % (5 % pour les actifs tokenisés actions/or). À re-relever avant chaque nouvelle session.</p>';
+  // voies
+  let vv = '<table><tr><th>Actif</th><th>Voie interne (app)</th><th>Voie externe (DEX + bridge)</th><th>Voie la moins chère</th><th>Économie sur '+fmtE(state.C)+'</th><th>Seuil de rentabilité de la voie externe</th></tr>';
+  for (const k of ['eBTC','weETH','PAXG','SPYx','QQQx','TBLLx']){ const i = coutEntree(k,'interne'), e = coutEntree(k,'externe'); const ci = state.C*i.pct + i.fixe, ce = state.C*e.pct + e.fixe; const best = (i.inconnu||e.inconnu)?'indéterminée (données manquantes)':(ci<=ce?'interne':'externe'); const seuil = (e.pct<i.pct && !i.inconnu && !e.inconnu) ? (e.fixe - i.fixe)/(i.pct - e.pct) : null;
+    vv += '<tr><td><b>'+k+'</b></td><td>'+fmtP(i.pct,2)+(i.inconnu?' + swap app <span class="pill INCONNU">INCONNU</span>':'')+' → '+fmtE(ci,2)+'</td><td>'+fmtP(e.pct,2)+' + '+fmtE(e.fixe,2)+' fixe'+(e.inconnu?' + DEX/gas <span class="pill INCONNU">INCONNU</span>':'')+' → '+fmtE(ce,2)+'</td><td>'+best+'</td><td>'+((i.inconnu||e.inconnu)?'—':fmtE(Math.abs(ci-ce),2))+'</td><td>'+(seuil===null?'—':'à partir de '+fmtE(seuil))+'</td></tr>'; }
+  $('tblVoies').innerHTML = vv+'</table><p class="muted">Coût de sortie (revente en fin d\'horizon) : à relever sur les deux voies (« Sell » 1 000 € dans l\'app ; swap inverse sur l\'agrégateur). Seules les parties connues sont comptées.</p>';
+}
+/* ----- interrogatoire bloc par bloc ----- */
+const BLOC_ORDER = ['A','B','C','D','Dbis','Dter','E','F'];
+function openUpdate(idx){
+  const b = BLOC_ORDER[idx]; if (!b){ $('modal').classList.remove('open'); return; }
+  const keys = Object.keys(PARAMS).filter(k=>PARAMS[k].bloc===b);
+  let h = '<h2>Mettre à jour les données — '+BLOCS[b]+' ('+(idx+1)+'/'+BLOC_ORDER.length+')</h2><p class="muted">Pour chaque ligne : Confirmé (O), nouvelle valeur, ou « je ne sais pas » (la ligne passe en INCONNU et bloque l\'actif concerné, pas le reste). Vous pouvez lire les chiffres sur une capture d\'écran de l\'app à l\'endroit indiqué dans « Où trouver ».</p><div class="scroll"><table><tr><th>Paramètre</th><th>Valeur actuelle</th><th>Statut</th><th>Où trouver</th><th>Réponse</th><th>Nouvelle valeur</th></tr>';
+  for (const k of keys){ const p = PARAMS[k]; const obj = p.valeur && typeof p.valeur==='object';
+    let inputs = '';
+    if (obj && !Array.isArray(p.valeur) && !k.startsWith('scenarios')) inputs = Object.entries(p.valeur).filter(([f,x])=>typeof x!=='object' && !['classe','rendement_param','liquidite','adresse_optimism','depuis'].includes(f)).map(([f,x])=>'<label style="display:block;font-size:12px">'+f+' <input type="text" data-k="'+k+'" data-f="'+f+'" value="'+(x===null?'':x)+'" style="width:90px"></label>').join('');
+    else if (!obj) inputs = '<input type="text" data-k="'+k+'" value="" placeholder="'+(p.valeur===null?'':p.valeur)+'">';
+    else inputs = '<span class="muted">via les curseurs de l\'app</span>';
+    h += '<tr><td><b>'+p.libelle+'</b><br><small class="muted">'+(p.note||'')+'</small></td><td>'+valStr(p.valeur)+' <small class="muted">'+(p.unite||'')+'</small></td><td><span class="pill '+statutClass(p.statut)+'">'+p.statut+'</span><br><small class="muted">'+(p.date||'')+'</small></td><td class="muted"><small>'+(p.ou_trouver||'')+'</small></td><td><select data-rep="'+k+'"><option value="">— (inchangé)</option><option value="O">Confirmé (O)</option><option value="N">Nouvelle valeur</option><option value="S">Réponse du support</option><option value="?">Je ne sais pas</option></select></td><td>'+inputs+'</td></tr>'; }
+  h += '</table></div><p><button class="btn" id="mSave">Enregistrer ce bloc et passer au suivant</button> <button class="btn sec" id="mSkip">Passer sans enregistrer</button> <button class="btn sec" id="mClose">Fermer</button></p>';
+  $('modalBox').innerHTML = h; $('modal').classList.add('open');
+  $('mClose').onclick = ()=>$('modal').classList.remove('open'); $('mSkip').onclick = ()=>openUpdate(idx+1);
+  $('mSave').onclick = ()=>{ const ov = JSON.parse(localStorage.getItem(LS_KEY)||'{}'); const today = new Date().toISOString().slice(0,10);
+    $('modalBox').querySelectorAll('select[data-rep]').forEach(sel => { const k = sel.dataset.rep; const rep = sel.value; if (!rep) return; const p = PARAMS[k]; const o = ov[k] || {};
+      if (rep==='?'){ o.statut='INCONNU'; o.date=today; if (k.startsWith('col_')) { o.valeur = Object.assign({}, p.valeur, {seuil:null}); o.statut_seuil='INCONNU'; } }
+      else { const src = rep==='S' ? 'support ether.fi (chat)' : 'utilisateur'; o.statut = 'CONFIRMÉ'; o.source = rep==='O' ? 'utilisateur (confirmé) — '+(p.source||'') : (rep==='S' ? 'support ether.fi (chat)' : 'utilisateur (relevé)'); o.date = today;
+        if (rep==='N' || rep==='S'){ const inputs = $('modalBox').querySelectorAll('input[data-k="'+k+'"]'); if (inputs.length===1 && !inputs[0].dataset.f){ const raw = inputs[0].value.trim(); if (raw!==''){ const num = Number(raw.replace(',','.')); o.valeur = isNaN(num)?raw:num; } }
+          else if (inputs.length){ const v = Object.assign({}, p.valeur); inputs.forEach(inp => { const raw = inp.value.trim(); if (raw==='') { v[inp.dataset.f] = null; return; } const num = Number(raw.replace(',','.')); v[inp.dataset.f] = isNaN(num)?raw:num; }); o.valeur = v; } }
+        if (k.startsWith('col_')){ const v = o.valeur||p.valeur; o.statut_ltv = v.ltv==null?'INCONNU':'CONFIRMÉ'; o.statut_seuil = v.seuil==null?'INCONNU':'CONFIRMÉ'; if (v.ltv==null||v.seuil==null||v.bonus==null) o.statut='INCONNU'; } }
+      ov[k] = o; });
+    localStorage.setItem(LS_KEY, JSON.stringify(ov)); applyOverrides(); renderAlloc(); renderAll(); openUpdate(idx+1); };
+}
+function downloadParams(){ const out = clone(RAW.parametres); out.parametres = clone(PARAMS); out.meta.date_export = new Date().toISOString(); const blob = new Blob([JSON.stringify(out,null,2)], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'parametres.json'; a.click(); }
+function importParams(e){ const f = e.target.files[0]; if (!f) return; const rd = new FileReader(); rd.onload = ()=>{ try { const j = JSON.parse(rd.result); if (!j.parametres) throw new Error('format'); RAW.parametres = j; localStorage.removeItem(LS_KEY); applyOverrides(); renderAlloc(); renderAll(); alert('Paramètres importés ('+Object.keys(j.parametres).length+'). Pour les rendre permanents, remplacez data/parametres.json par ce fichier et relancez scripts/generer_bundle.py.'); } catch(err){ alert('Fichier invalide : '+err.message); } }; rd.readAsText(f); }
+
+/* =====================================================================
+   EXPORT CSV, TESTS, INIT
+   ===================================================================== */
+function exportCSV(){ if (!lastRes) renderResults(); const R = lastRes; const cfg = buildCfg(); const sep = ';'; const L = [];
+  L.push(['Simulateur ether.fi Cash', new Date().toISOString(), 'scénario '+state.scen, cfg.N+' mois', fmtE(cfg.D)+'/mois', 'capital '+fmtE(cfg.C)].join(sep));
+  L.push(['Route','Frais','Intérêts','Cashback nominal','Cashback net','Yield collatéral','± value latente','Pertes liquidation','Gain net hors prix','Gain net avec prix','Note'].join(sep));
+  for (const r of [R.A,R.B1,R.B2,R.C,R.D]) L.push([r.nom,r.frais,r.interets,r.cashbackNom,r.cashbackNet,r.yieldCollat,r.pv,r.perteLiq,r.gainNetHors,r.gainNetAvec,(r.note||'').replace(/;/g,',')].map(x=>typeof x==='number'?x.toFixed(2).replace('.',','):x).join(sep));
+  L.push(''); L.push(['Mois','Dette','Collatéral','LTV','Seuil','LTV max','Liquidation'].join(sep));
+  const s = R.D.serie; for (let t=0;t<s.dette.length;t++) L.push([t,s.dette[t].toFixed(2),s.collat[t].toFixed(2),(s.ltv[t]*100).toFixed(2),(s.seuil[t]*100).toFixed(1),(s.ltvMax[t]*100).toFixed(1),s.liq[t]].join(sep).replace(/\./g,','));
+  L.push(''); L.push(footer());
+  const blob = new Blob(['﻿'+L.join('\n')], {type:'text/csv;charset=utf-8'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'resultats_etherfi.csv'; a.click(); }
+function testLiquidation(){ // exemple officiel weETH : 10 000 $ de collatéral, 5 500 $ empruntés
+  const seuil = 0.75, bonus = 0.035, part = 0.5; const rows = [];
+  for (const drop of [0.30, 0.35]){ const collat = 10000*(1-drop), dette = 5500; const ltv = dette/collat; let res = 'aucune'; let L = null; if (ltv>seuil){ L = liquider(dette, collat, seuil, bonus, part); res = L.type; } rows.push({drop, collat, ltv, res, L}); }
+  const ok = rows[0].res==='partielle' && rows[1].res==='totale';
+  $('testLiq').innerHTML = '<table><tr><th>Chute</th><th class="num">Collatéral</th><th class="num">LTV</th><th>Résultat moteur</th><th>Attendu (help center)</th><th class="num">Dette après</th><th class="num">Collatéral après</th></tr>'+rows.map((r,i)=>'<tr><td>'+fmtP(-r.drop,0)+'</td><td class="num">'+fmtN(r.collat,0)+' $</td><td class="num">'+fmtP(r.ltv,1)+'</td><td>'+r.res+'</td><td>'+(i===0?'partielle':'totale')+'</td><td class="num">'+(r.L?fmtN(r.L.dette,0)+' $':'—')+'</td><td class="num">'+(r.L?fmtN(r.L.collat,0)+' $':'—')+'</td></tr>').join('')+'</table><div class="'+(ok?'okbox':'badbox')+'">'+(ok?'✔ Test réussi : le moteur reproduit l\'exemple officiel (−30 % → liquidation partielle, −35 % → liquidation totale).':'✘ Test échoué.')+' Mécanique implémentée : le liquidateur rembourse 50 % de la dette et saisit ce montant + bonus (3,5 %) en collatéral ; si le LTV reste au-dessus du seuil, le reste est liquidé.</div>';
+  console.log('Test liquidation weETH', ok?'OK':'ÉCHEC', rows); return ok; }
+function renderAll(){ renderResults(); renderStats(); renderData(); renderMcOverrides(); testLiquidation(); if ($('tab-seuils').classList.contains('active')) renderSeuils(); }
+document.addEventListener('DOMContentLoaded', ()=>{ $('ddMois').max = state.N; $('chocMois').max = state.N; bind(); wire(); renderAll(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+{
+  "BTC": {
+    "source": "kraken",
+    "date_telechargement": "2026-09-28",
+    "debut": "2021-09-30",
+    "fin": "2026-09-28",
+    "n": 878,
+    "jours_quotidiens": 721
+  },
+  "ETH": {
+    "source": "kraken",
+    "date_telechargement": "2026-09-28",
+    "debut": "2021-09-30",
+    "fin": "2026-09-28",
+    "n": 878,
+    "jours_quotidiens": 721
+  },
+  "PAXG": {
+    "source": "kraken",
+    "date_telechargement": "2026-09-28",
+    "debut": "2021-09-30",
+    "fin": "2026-09-28",
+    "n": 878,
+    "jours_quotidiens": 721
+  },
+  "ETHFI": {
+    "source": "kraken",
+    "date_telechargement": "2026-09-28",
+    "debut": "2024-05-30",
+    "fin": "2026-09-28",
+    "n": 739,
+    "jours_quotidiens": 721
+  },
+  "HYPE": {
+    "source": "kraken",
+    "date_telechargement": "2026-09-28",
+    "debut": "2026-01-28",
+    "fin": "2026-09-28",
+    "n": 244,
+    "jours_quotidiens": 244
+  },
+  "SPY": {
+    "source": "nasdaq",
+    "date_telechargement": "2026-09-28",
+    "debut": "2021-09-27",
+    "fin": "2026-09-25",
+    "n": 1255,
+    "jours_quotidiens": 1255
+  },
+  "QQQ": {
+    "source": "nasdaq",
+    "date_telechargement": "2026-09-28",
+    "debut": "2021-09-27",
+    "fin": "2026-09-25",
+    "n": 1255,
+    "jours_quotidiens": 1255
+  },
+  "BIL": {
+    "source": "nasdaq",
+    "date_telechargement": "2026-09-28",
+    "debut": "2021-09-27",
+    "fin": "2026-09-25",
+    "n": 1255,
+    "jours_quotidiens": 1255
+  },
+  "GLD": {
+    "source": "nasdaq",
+    "date_telechargement": "2026-09-28",
+    "debut": "2021-09-27",
+    "fin": "2026-09-25",
+    "n": 1255,
+    "jours_quotidiens": 1255
+  },
+  "SPYx": {
+    "source": "coingecko",
+    "date_telechargement": "2026-09-28",
+    "debut": "2025-09-29",
+    "fin": "2026-09-28",
+    "n": 365,
+    "jours_quotidiens": 365
+  },
+  "QQQx": {
+    "source": "coingecko",
+    "date_telechargement": "2026-09-28",
+    "debut": "2025-09-29",
+    "fin": "2026-09-28",
+    "n": 365,
+    "jours_quotidiens": 365
+  },
+  "TBLLx": {
+    "source": "coingecko",
+    "date_telechargement": "2026-09-28",
+    "debut": "2026-02-05",
+    "fin": "2026-09-28",
+    "n": 178,
+    "jours_quotidiens": 178
+  },
+  "GLDx": {
+    "source": "coingecko",
+    "date_telechargement": "2026-09-28",
+    "debut": "2025-09-29",
+    "fin": "2026-09-28",
+    "n": 365,
+    "jours_quotidiens": 365
+  },
+  "eBTC": {
+    "source": "coingecko",
+    "date_telechargement": "2026-09-28",
+    "debut": "2025-09-29",
+    "fin": "2026-09-28",
+    "n": 365,
+    "jours_quotidiens": 365
+  },
+  "weETH": {
+    "source": "coingecko",
+    "date_telechargement": "2026-09-28",
+    "debut": "2025-09-29",
+    "fin": "2026-09-28",
+    "n": 365,
+    "jours_quotidiens": 365
+  }
+}
