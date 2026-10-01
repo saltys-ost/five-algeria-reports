@@ -351,25 +351,25 @@
     },
     "eurusd": {
       "libelle": "Taux EUR/USD",
-      "valeur": 1.14,
+      "valeur": 1.1275,
       "unite": "USD par EUR",
-      "source": "on-chain (Borrow Hub Optimism)",
-      "date": "2026-09-28",
-      "statut": "DÉFAUT",
+      "source": "utilisateur — captures app ether.fi > Swap, 01/10/2026 16:49–16:52 (Paris), marché US ouvert",
+      "date": "2026-10-01",
+      "statut": "CONFIRMÉ",
       "bloc": "B",
       "ou_trouver": "app > Transactions > dernier dépôt > Exchange rate",
-      "note": "BCE 25/09/2026 : 1,1403 (api.frankfurter.dev, vérifié par Claude Code le 28/09) — cohérent avec le 1,14 on-chain."
+      "note": "Taux implicite ether.fi le 01/10/2026 : 700 USDC valorisés 620,84 € → 0,88691 €/USDC → 1,1275 USD/EUR. BCE du jour : 1,1298 (écart −0,2 %). Le 28/09 on-chain : 1,14."
     },
     "eurusd_bce": {
       "libelle": "Taux EUR/USD BCE (référence publique)",
-      "valeur": 1.1403,
+      "valeur": 1.1298,
       "unite": "USD par EUR",
       "source": "Claude Code (source publique)",
-      "date": "2026-09-25",
+      "date": "2026-10-01",
       "statut": "VÉRIFIÉ",
       "bloc": "B",
       "ou_trouver": "api.frankfurter.dev (BCE)",
-      "note": "Sert à mesurer le spread FX caché des dépôts USDC"
+      "note": "api.frankfurter.dev (BCE) du 01/10/2026, vérifié par Claude Code. Sert à mesurer le spread FX caché des dépôts et conversions USDC."
     },
     "prix_ethfi": {
       "libelle": "Prix ETHFI",
@@ -505,14 +505,14 @@
     },
     "swap_usdc_xstock": {
       "libelle": "Swap USDC → actif tokenisé (SPYx…) dans l'app",
-      "valeur": null,
+      "valeur": 0.31,
       "unite": "%",
-      "source": "app ether.fi",
-      "date": "2026-09-28",
-      "statut": "INCONNU",
+      "source": "utilisateur — captures app ether.fi > Swap, 01/10/2026 16:49–16:52 (Paris), marché US ouvert",
+      "date": "2026-10-01",
+      "statut": "CONFIRMÉ",
       "bloc": "C",
       "ou_trouver": "app > page SPYx > Buy : saisir 100, lire « You receive » (heures de marché US)",
-      "note": ""
+      "note": "700 USDC (valorisés 620,84 €) → 0,9116 SPYx (valorisés 618,93 €) : coût 0,31 % avant cashback ; 1 SPYx = 767,90 USDC. Cashback sur swap 0,93 € (0,15 %) → coût net ≈ 0,16 %. Tolérance de slippage 1 % (Minimum Received = 99 %)."
     },
     "swap_usdc_ebtc": {
       "libelle": "Swap USDC → eBTC dans l'app",
@@ -678,7 +678,7 @@
       "statut": "VÉRIFIÉ",
       "bloc": "D",
       "ou_trouver": "help center (tableau collatéral)",
-      "note": "Rendement = taux de supply (0 % par défaut). ATTENTION : l'EURC placé dans Earn devient LiquidEUR (LTV 70 %), pas EURC 90 %. | On-chain (Borrow Spoke Aave V4, OP, 28/09/2026) : collateralFactor 90 %, bonus MAX 7.5 % (enchère hollandaise : le bonus réel croît quand la santé baisse). Le moteur garde le bonus documenté du help center ; contradiction signalée.",
+      "note": "Rendement = taux de supply (0 % par défaut). ATTENTION : l'EURC placé dans Earn devient LiquidEUR (LTV 70 %), pas EURC 90 %. | On-chain (Borrow Spoke Aave V4, OP, 28/09/2026) : collateralFactor 90 %, bonus MAX 7.5 % (enchère hollandaise : le bonus réel croît quand la santé baisse). Le moteur garde le bonus documenté du help center ; contradiction signalée. | Position réelle observée le 01/10/2026 : 705,36 EURC dont 140,76 immobilisés en collatéral d'un prêt en cours (564,60 disponibles au swap).",
       "statut_ltv": "VÉRIFIÉ",
       "statut_seuil": "VÉRIFIÉ"
     },
@@ -1282,14 +1282,21 @@
     },
     "spread_SPYx": {
       "libelle": "Spread de valorisation SPYx / SPY",
-      "valeur": null,
+      "valeur": 0.7,
       "unite": "%",
-      "source": "app ether.fi > Markets vs source publique",
-      "date": "2026-09-28",
-      "statut": "INCONNU",
+      "source": "utilisateur — captures app ether.fi > Swap, 01/10/2026 16:49–16:52 (Paris), marché US ouvert + Nasdaq (SPY 760,28 $ à 10:53 ET) + BCE 1,1298",
+      "date": "2026-10-01",
+      "statut": "CONFIRMÉ",
       "bloc": "Dbis",
       "ou_trouver": "app > Markets > Stocks > SPYx",
-      "note": "SPY clôture 25/09/2026 : 771,35 $ (Nasdaq) ; SPYx CoinGecko à relever à la même heure"
+      "note": "Prix SPYx dans ether.fi : 678,97 € = 767,90 USDC. SPY à la même minute : 760,28 $. Au taux implicite ether.fi (1,1275) : +0,7 % ; au taux BCE (1,1298) : +0,9 %. Environ 0,5 point s'explique par le wrapper (1 wSPYx = 1,0047 SPYx) ; le reste est le spread du market maker. Sous l'alerte de 5 %.",
+      "reference_publique": {
+        "spy_usd": 760.28,
+        "heure": "2026-10-01 10:53 ET",
+        "source": "api.nasdaq.com",
+        "spyx_etherfi_eur": 678.97,
+        "spyx_etherfi_usdc": 767.9
+      }
     },
     "spread_QQQx": {
       "libelle": "Spread de valorisation QQQx / QQQ",
@@ -1499,16 +1506,17 @@
       "libelle": "Coût d'entrée voie interne SPYx",
       "valeur": {
         "depot_pct": 0.2,
-        "swap_pct": null,
-        "total_pct": null
+        "swap_pct": 0.63,
+        "cashback_swap_pct": -0.15,
+        "total_pct": 0.68
       },
       "unite": "%",
-      "source": "app ether.fi",
-      "date": "2026-09-28",
-      "statut": "INCONNU",
+      "source": "utilisateur — captures app ether.fi > Swap, 01/10/2026 16:49–16:52 (Paris), marché US ouvert (dépôt SEPA→EURC 0,20 % du 28/09)",
+      "date": "2026-10-01",
+      "statut": "CONFIRMÉ",
       "bloc": "Dter",
       "ou_trouver": "app > Transactions (dépôt) + app > page SPYx > Buy 1 000 USDC « You receive » vs prix de marché à la même minute",
-      "note": "Le dépôt SEPA→EURC (0,20 %) est connu ; le swap dans l'app est à relever"
+      "note": "Voie interne via EURC : 0,20 % (SEPA→EURC) + 0,63 % (swap 1 000 EURC→SPYx) − 0,15 % (cashback swap) = 0,68 %. Via USDC : 0,17 % + 0,50 % FX + 0,31 % − 0,15 % = 0,83 %. Pour 565 € le swap monte à 0,93 % (total ≈ 0,98 %). Minimum Received = 99 % (slippage max 1 %)."
     },
     "entree_externe_SPYx": {
       "libelle": "Coût d'entrée voie externe SPYx",
@@ -1745,14 +1753,14 @@
     },
     "cb_trade": {
       "libelle": "Cashback sur trade (swap)",
-      "valeur": 0.12,
+      "valeur": 0.15,
       "unite": "%",
-      "source": "app ether.fi > Transactions (observé)",
-      "date": "2026-09-28",
-      "statut": "DÉFAUT",
+      "source": "utilisateur — captures app ether.fi > Swap, 01/10/2026 16:49–16:52 (Paris), marché US ouvert",
+      "date": "2026-10-01",
+      "statut": "CONFIRMÉ",
       "bloc": "E",
       "ou_trouver": "app > Transactions > ligne du swap",
-      "note": "Documenté (cashback sur trades, lock 7 j) mais taux non publié ; observé ~0,12 % (0,02 $ sur 17,10 $). Non utilisé par le moteur."
+      "note": "Trois devis concordants : 0,84 € sur 564,80 € ; 0,93 € sur 620,84 € ; 1,50 € sur 1 000,36 € → 0,15 % du montant payé (le 0,12 % du 28/09 était un arrondi sur 17 $). Payé en ETHFI, lock 7 j."
     },
     "cb_emprunt": {
       "libelle": "Cashback sur emprunt",
@@ -1945,6 +1953,17 @@
       "bloc": "F",
       "ou_trouver": "curseur",
       "note": ""
+    },
+    "swap_eurc_xstock": {
+      "libelle": "Swap EURC → actif tokenisé (SPYx) dans l'app",
+      "valeur": 0.63,
+      "unite": "%",
+      "source": "utilisateur — captures app ether.fi > Swap, 01/10/2026 16:49–16:52 (Paris), marché US ouvert",
+      "date": "2026-10-01",
+      "statut": "CONFIRMÉ",
+      "bloc": "C",
+      "ou_trouver": "app > Swap : EURC → SPYx, lire « You receive » et la valeur € des deux côtés",
+      "note": "1 000 EURC (1 000,36 €) → 1,4631 SPYx (994,06 €) : coût 0,63 % ; 1 SPYx = 683,49 EURC. Petit montant : 564,59 EURC (564,80 €) → 0,8241 SPYx (559,52 €) : 0,93 % ; 1 SPYx = 685,12 EURC. La route EURC coûte 0,3 à 0,6 point de plus que la route USDC (767,90 USDC = 678,97 €). Cashback 0,15 % à déduire."
     }
   }
 }
